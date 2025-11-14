@@ -24,26 +24,26 @@ namespace Domain.Entities
 
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid Id { get; set; }
+        public int Id { get; set; }
 
         // 🔗 Sessão/Troca vinculada (opcional)
 
         [Column("TROCA_ID")]
-        public Guid? TrocaId { get; set; }
+        public int? TrocaId { get; set; }
         public Troca? Troca { get; set; }
 
         // 👤 Usuário que envia créditos
 
         [Required]
         [Column("REMETENTE_ID")]
-        public Guid RemetenteId { get; set; }
+        public int RemetenteId { get; set; }
         public Usuario Remetente { get; set; } = null!;
 
         // 👤 Usuário que recebe créditos
 
         [Required]
         [Column("DESTINATARIO_ID")]
-        public Guid DestinatarioId { get; set; }
+        public int DestinatarioId { get; set; }
         public Usuario Destinatario { get; set; } = null!;
 
         // 💰 Valor

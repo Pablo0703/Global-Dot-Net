@@ -4,23 +4,23 @@ namespace Presentation.Doc.Samples
 {
     public static class TransacaoSamples
     {
-        // 📥 Request
+        // 📥 REQUEST SAMPLE
         public static readonly Transacao TransacaoRequest = new Transacao
         {
-            RemetenteId = Guid.NewGuid(),
-            DestinatarioId = Guid.NewGuid(),
+            RemetenteId = 1,
+            DestinatarioId = 2,
             Creditos = 5,
-            Tipo = Transacao.PAGAMENTO_SESSAO,
-            Status = Transacao.PENDENTE,
-            Descricao = "Pagamento por mentoria"
+            Tipo = "PAGAMENTO_SESSAO",
+            Descricao = "Pagamento por mentoria",
+            Status = "PENDENTE"
         };
 
-        // 📤 Response
+        // 📤 RESPONSE SAMPLE
         public static readonly object TransacaoResponse = new
         {
-            Id = Guid.NewGuid(),
-            RemetenteId = Guid.NewGuid(),
-            DestinatarioId = Guid.NewGuid(),
+            Id = 900,
+            RemetenteId = 1,
+            DestinatarioId = 2,
             Creditos = 5,
             Tipo = "PAGAMENTO_SESSAO",
             Status = "CONCLUIDA",

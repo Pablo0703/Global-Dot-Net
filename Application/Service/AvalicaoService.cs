@@ -2,7 +2,6 @@
 using Domain.Entities;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
-using System;
 
 namespace Application.Service
 {
@@ -15,7 +14,6 @@ namespace Application.Service
             _context = context;
         }
 
-        // ➕ Criar
         public async Task<Avaliacao> Criar(Avaliacao avaliacao)
         {
             _context.Avaliacoes.Add(avaliacao);
@@ -23,8 +21,7 @@ namespace Application.Service
             return avaliacao;
         }
 
-        // 🔎 Buscar por ID
-        public async Task<Avaliacao?> BuscarPorId(Guid id)
+        public async Task<Avaliacao?> BuscarPorId(int id)
         {
             return await _context.Avaliacoes
                 .Include(a => a.Avaliador)
@@ -32,20 +29,37 @@ namespace Application.Service
                 .FirstOrDefaultAsync(a => a.Id == id);
         }
 
-        // 📄 Listar por avaliado
-        public async Task<IEnumerable<Avaliacao>> ListarPorAvaliado(Guid usuarioId)
+        public async Task<IEnumerable<Avaliacao>> ListarPorAvaliado(int usuarioId)
         {
             return await _context.Avaliacoes
                 .Where(a => a.AvaliadoId == usuarioId)
                 .ToListAsync();
         }
 
-        // 📄 Listar por troca
-        public async Task<IEnumerable<Avaliacao>> ListarPorTroca(Guid trocaId)
+        public async Task<IEnumerable<Avaliacao>> ListarPorTroca(int trocaId)
         {
             return await _context.Avaliacoes
                 .Where(a => a.TrocaId == trocaId)
                 .ToListAsync();
         }
+
+        // 🔥 AGORA ESTÁ CORRETO: REMOVE POR GUID
+        public async Task Remover(int id)
+        {
+            var avaliacao = await _context.Avaliacoes.FindAsync(id);
+
+            if (avaliacao == null)
+                return;
+
+            _context.Avaliacoes.Remove(avaliacao);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task Atualizar(Avaliacao avaliacao)
+        {
+            _context.Avaliacoes.Update(avaliacao);
+            await _context.SaveChangesAsync();
+        }
+
     }
 }

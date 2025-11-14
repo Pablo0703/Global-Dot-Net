@@ -1,37 +1,107 @@
 {
   "openapi": "3.0.1",
   "info": {
-    "title": "Troca Comigo API v1",
+    "title": "Troca Comigo API",
+    "description": "API do Global Solution FIAP – Skill Swap Hub",
     "version": "v1"
   },
   "paths": {
-    "/api/v1/avaliacoes": {
+    "/api/v1/auth/login": {
       "post": {
         "tags": [
-          "Avaliacao"
+          "Auth"
         ],
+        "summary": "Realizar login",
+        "description": "Recebe os dados do usuário e gera um token JWT válido por 2 horas. **Não possui validação real de credenciais aqui**, apenas gera o token.",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Avaliacao"
-              }
+                "$ref": "#/components/schemas/LoginRequest"
+              },
+              "example": {"userId":1,"fullName":"João da Silva","email":"joao.silva@example.com","role":"USER"}
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/Avaliacao"
-              }
+                "$ref": "#/components/schemas/LoginRequest"
+              },
+              "example": {"userId":1,"fullName":"João da Silva","email":"joao.silva@example.com","role":"USER"}
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/Avaliacao"
-              }
+                "$ref": "#/components/schemas/LoginRequest"
+              },
+              "example": {"userId":1,"fullName":"João da Silva","email":"joao.silva@example.com","role":"USER"}
             }
           }
         },
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Token gerado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TokenResponse"
+                },
+                "example": {"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...","expiresIn":7200,"type":"Bearer"}
+              }
+            }
+          },
+          "400": {
+            "description": "Dados inválidos"
+          }
+        }
+      }
+    },
+    "/api/v1/avaliacoes": {
+      "post": {
+        "tags": [
+          "Avaliacao"
+        ],
+        "summary": "Criar avaliação",
+        "description": "Cria uma nova avaliação entre usuários.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AvaliacaoDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AvaliacaoDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/AvaliacaoDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Avaliação criada com sucesso",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/AvaliacaoDTO"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AvaliacaoDTO"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AvaliacaoDTO"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Dados inválidos"
           }
         }
       }
@@ -41,66 +111,227 @@
         "tags": [
           "Avaliacao"
         ],
+        "summary": "Buscar avaliação por ID",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string",
-              "format": "uuid"
+              "type": "integer",
+              "format": "int32"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Avaliação localizada",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/AvaliacaoDTO"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AvaliacaoDTO"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AvaliacaoDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Avaliação não encontrada"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Avaliacao"
+        ],
+        "summary": "Atualizar avaliação",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AvaliacaoDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AvaliacaoDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/AvaliacaoDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Avaliação atualizada",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/AvaliacaoDTO"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AvaliacaoDTO"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AvaliacaoDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Avaliação não encontrada"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Avaliacao"
+        ],
+        "summary": "Excluir avaliação",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Avaliação removida"
+          },
+          "404": {
+            "description": "Avaliação não encontrada"
           }
         }
       }
     },
-    "/api/v1/avaliacoes/avaliado/{id}": {
+    "/api/v1/avaliacoes/avaliado/{usuarioId}": {
       "get": {
         "tags": [
           "Avaliacao"
         ],
+        "summary": "Listar avaliações recebidas por um usuário",
         "parameters": [
           {
-            "name": "id",
+            "name": "usuarioId",
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string",
-              "format": "uuid"
+              "type": "integer",
+              "format": "int32"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Lista retornada com sucesso",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AvaliacaoDTO"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AvaliacaoDTO"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AvaliacaoDTO"
+                  }
+                }
+              }
+            }
           }
         }
       }
     },
-    "/api/v1/avaliacoes/troca/{id}": {
+    "/api/v1/avaliacoes/troca/{trocaId}": {
       "get": {
         "tags": [
           "Avaliacao"
         ],
+        "summary": "Listar avaliações vinculadas a uma troca",
         "parameters": [
           {
-            "name": "id",
+            "name": "trocaId",
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string",
-              "format": "uuid"
+              "type": "integer",
+              "format": "int32"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Lista retornada com sucesso",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AvaliacaoDTO"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AvaliacaoDTO"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AvaliacaoDTO"
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -110,28 +341,47 @@
         "tags": [
           "Habilidade"
         ],
+        "summary": "Criar habilidade",
+        "description": "Cria uma nova habilidade para um usuário.",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Habilidade"
+                "$ref": "#/components/schemas/HabilidadeDTO"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/Habilidade"
+                "$ref": "#/components/schemas/HabilidadeDTO"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/Habilidade"
+                "$ref": "#/components/schemas/HabilidadeDTO"
               }
             }
           }
         },
         "responses": {
-          "200": {
-            "description": "OK"
+          "201": {
+            "description": "Habilidade criada com sucesso",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/HabilidadeDTO"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HabilidadeDTO"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HabilidadeDTO"
+                }
+              }
+            }
           }
         }
       },
@@ -139,6 +389,7 @@
         "tags": [
           "Habilidade"
         ],
+        "summary": "Listar todas as habilidades",
         "responses": {
           "200": {
             "description": "OK"
@@ -151,20 +402,41 @@
         "tags": [
           "Habilidade"
         ],
+        "summary": "Buscar habilidade por ID",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string",
-              "format": "uuid"
+              "type": "integer",
+              "format": "int32"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Habilidade encontrada",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/HabilidadeDTO"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HabilidadeDTO"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HabilidadeDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Habilidade não encontrada"
           }
         }
       },
@@ -172,14 +444,15 @@
         "tags": [
           "Habilidade"
         ],
+        "summary": "Atualizar habilidade",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string",
-              "format": "uuid"
+              "type": "integer",
+              "format": "int32"
             }
           }
         ],
@@ -187,24 +460,44 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Habilidade"
+                "$ref": "#/components/schemas/HabilidadeDTO"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/Habilidade"
+                "$ref": "#/components/schemas/HabilidadeDTO"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/Habilidade"
+                "$ref": "#/components/schemas/HabilidadeDTO"
               }
             }
           }
         },
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Habilidade atualizada",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/HabilidadeDTO"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HabilidadeDTO"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HabilidadeDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Habilidade não encontrada"
           }
         }
       },
@@ -212,20 +505,24 @@
         "tags": [
           "Habilidade"
         ],
+        "summary": "Excluir habilidade",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string",
-              "format": "uuid"
+              "type": "integer",
+              "format": "int32"
             }
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
+          "204": {
+            "description": "Habilidade removida"
+          },
+          "404": {
+            "description": "Habilidade não encontrada"
           }
         }
       }
@@ -235,14 +532,15 @@
         "tags": [
           "Habilidade"
         ],
+        "summary": "Listar habilidades de um usuário específico",
         "parameters": [
           {
             "name": "usuarioId",
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string",
-              "format": "uuid"
+              "type": "integer",
+              "format": "int32"
             }
           }
         ],
@@ -258,28 +556,50 @@
         "tags": [
           "Transacao"
         ],
+        "summary": "Criar transação",
+        "description": "Cria uma transação de créditos entre dois usuários, podendo ser pagamento, bônus ou ajuste.",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Transacao"
+                "$ref": "#/components/schemas/TransacaoDTO"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/Transacao"
+                "$ref": "#/components/schemas/TransacaoDTO"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/Transacao"
+                "$ref": "#/components/schemas/TransacaoDTO"
               }
             }
           }
         },
         "responses": {
-          "200": {
-            "description": "OK"
+          "201": {
+            "description": "Transação criada com sucesso",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/TransacaoDTO"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TransacaoDTO"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TransacaoDTO"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Dados inválidos"
           }
         }
       },
@@ -287,9 +607,11 @@
         "tags": [
           "Transacao"
         ],
+        "summary": "Listar transações",
+        "description": "Retorna todas as transações registradas no sistema.",
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Lista retornada com sucesso"
           }
         }
       }
@@ -299,20 +621,130 @@
         "tags": [
           "Transacao"
         ],
+        "summary": "Buscar transação por ID",
+        "description": "Obtém os detalhes completos de uma transação específica.",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string",
-              "format": "uuid"
+              "type": "integer",
+              "format": "int32"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Transação encontrada",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/TransacaoDTO"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TransacaoDTO"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TransacaoDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Transação não encontrada"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Transacao"
+        ],
+        "summary": "Atualizar transação",
+        "description": "Atualiza completamente os dados de uma transação existente.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TransacaoDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TransacaoDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/TransacaoDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Transação atualizada com sucesso",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/TransacaoDTO"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TransacaoDTO"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TransacaoDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Transação não encontrada"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Transacao"
+        ],
+        "summary": "Excluir transação",
+        "description": "Remove permanentemente uma transação do sistema.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Transação removida com sucesso"
+          },
+          "404": {
+            "description": "Transação não encontrada"
           }
         }
       }
@@ -322,20 +754,22 @@
         "tags": [
           "Transacao"
         ],
+        "summary": "Listar transações de um usuário",
+        "description": "Retorna todas as transações em que o usuário aparece como remetente ou destinatário.",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string",
-              "format": "uuid"
+              "type": "integer",
+              "format": "int32"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Lista retornada com sucesso"
           }
         }
       }
@@ -345,20 +779,42 @@
         "tags": [
           "Transacao"
         ],
+        "summary": "Concluir transação",
+        "description": "Marca a transação como CONCLUÍDA.",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string",
-              "format": "uuid"
+              "type": "integer",
+              "format": "int32"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Transação concluída com sucesso",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/TransacaoDTO"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TransacaoDTO"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TransacaoDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Transação não encontrada"
           }
         }
       }
@@ -368,20 +824,42 @@
         "tags": [
           "Transacao"
         ],
+        "summary": "Estornar transação",
+        "description": "Altera o status da transação para ESTORNADA.",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string",
-              "format": "uuid"
+              "type": "integer",
+              "format": "int32"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Transação estornada com sucesso",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/TransacaoDTO"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TransacaoDTO"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TransacaoDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Transação não encontrada"
           }
         }
       }
@@ -391,28 +869,50 @@
         "tags": [
           "Troca"
         ],
+        "summary": "Criar troca",
+        "description": "Cria uma nova troca entre mentor e aluno, vinculada a uma habilidade.",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Troca"
+                "$ref": "#/components/schemas/TrocaDTO"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/Troca"
+                "$ref": "#/components/schemas/TrocaDTO"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/Troca"
+                "$ref": "#/components/schemas/TrocaDTO"
               }
             }
           }
         },
         "responses": {
-          "200": {
-            "description": "OK"
+          "201": {
+            "description": "Troca criada com sucesso",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/TrocaDTO"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TrocaDTO"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TrocaDTO"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Dados inválidos"
           }
         }
       },
@@ -420,9 +920,11 @@
         "tags": [
           "Troca"
         ],
+        "summary": "Listar trocas",
+        "description": "Lista todas as trocas cadastradas no sistema.",
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Lista retornada com sucesso"
           }
         }
       }
@@ -432,20 +934,104 @@
         "tags": [
           "Troca"
         ],
+        "summary": "Buscar troca por ID",
+        "description": "Retorna os detalhes de uma troca específica.",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string",
-              "format": "uuid"
+              "type": "integer",
+              "format": "int32"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Troca encontrada",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/TrocaDTO"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TrocaDTO"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TrocaDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Troca não encontrada"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Troca"
+        ],
+        "summary": "Atualizar troca",
+        "description": "Atualiza os dados de uma troca (exceto status).",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TrocaDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TrocaDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/TrocaDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Troca atualizada com sucesso",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/TrocaDTO"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TrocaDTO"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TrocaDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Troca não encontrada"
           }
         }
       },
@@ -453,66 +1039,75 @@
         "tags": [
           "Troca"
         ],
+        "summary": "Excluir troca",
+        "description": "Remove permanentemente uma troca do sistema.",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string",
-              "format": "uuid"
+              "type": "integer",
+              "format": "int32"
             }
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
+          "204": {
+            "description": "Troca removida com sucesso"
+          },
+          "404": {
+            "description": "Troca não encontrada"
           }
         }
       }
     },
-    "/api/v1/trocas/mentor/{id}": {
+    "/api/v1/trocas/mentor/{mentorId}": {
       "get": {
         "tags": [
           "Troca"
         ],
+        "summary": "Listar trocas por mentor",
+        "description": "Retorna todas as trocas em que o usuário atua como mentor.",
         "parameters": [
           {
-            "name": "id",
+            "name": "mentorId",
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string",
-              "format": "uuid"
+              "type": "integer",
+              "format": "int32"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Lista retornada com sucesso"
           }
         }
       }
     },
-    "/api/v1/trocas/aluno/{id}": {
+    "/api/v1/trocas/aluno/{alunoId}": {
       "get": {
         "tags": [
           "Troca"
         ],
+        "summary": "Listar trocas por aluno",
+        "description": "Retorna todas as trocas em que o usuário atua como aluno.",
         "parameters": [
           {
-            "name": "id",
+            "name": "alunoId",
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string",
-              "format": "uuid"
+              "type": "integer",
+              "format": "int32"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Lista retornada com sucesso"
           }
         }
       }
@@ -522,14 +1117,16 @@
         "tags": [
           "Troca"
         ],
+        "summary": "Atualizar status da troca",
+        "description": "Atualiza apenas o status da troca (AGENDADA, CONFIRMADA, CONCLUIDA...).",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string",
-              "format": "uuid"
+              "type": "integer",
+              "format": "int32"
             }
           }
         ],
@@ -554,7 +1151,27 @@
         },
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Status atualizado com sucesso",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/TrocaDTO"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TrocaDTO"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TrocaDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Troca não encontrada"
           }
         }
       }
@@ -564,28 +1181,50 @@
         "tags": [
           "Usuario"
         ],
+        "summary": "Criar novo usuário",
+        "description": "Endpoint responsável pela criação de um novo usuário.",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Usuario"
+                "$ref": "#/components/schemas/UsuarioDTO"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/Usuario"
+                "$ref": "#/components/schemas/UsuarioDTO"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/Usuario"
+                "$ref": "#/components/schemas/UsuarioDTO"
               }
             }
           }
         },
         "responses": {
-          "200": {
-            "description": "OK"
+          "201": {
+            "description": "Usuário criado com sucesso",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/UsuarioDTO"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UsuarioDTO"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UsuarioDTO"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Dados inválidos"
           }
         }
       },
@@ -593,6 +1232,8 @@
         "tags": [
           "Usuario"
         ],
+        "summary": "Listar usuários",
+        "description": "Retorna usuários com suporte a paginação.",
         "parameters": [
           {
             "name": "page",
@@ -615,7 +1256,33 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Lista retornada",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UsuarioDTO"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UsuarioDTO"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UsuarioDTO"
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -625,20 +1292,42 @@
         "tags": [
           "Usuario"
         ],
+        "summary": "Buscar usuário por ID",
+        "description": "Retorna os dados de um usuário específico.",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string",
-              "format": "uuid"
+              "type": "integer",
+              "format": "int32"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Usuário encontrado",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/UsuarioDTO"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UsuarioDTO"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UsuarioDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Usuário não encontrado"
           }
         }
       },
@@ -646,14 +1335,16 @@
         "tags": [
           "Usuario"
         ],
+        "summary": "Atualizar usuário",
+        "description": "Atualiza os dados de um usuário existente.",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string",
-              "format": "uuid"
+              "type": "integer",
+              "format": "int32"
             }
           }
         ],
@@ -661,24 +1352,44 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Usuario"
+                "$ref": "#/components/schemas/UsuarioDTO"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/Usuario"
+                "$ref": "#/components/schemas/UsuarioDTO"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/Usuario"
+                "$ref": "#/components/schemas/UsuarioDTO"
               }
             }
           }
         },
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Usuário atualizado",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/UsuarioDTO"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UsuarioDTO"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UsuarioDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Usuário não encontrado"
           }
         }
       },
@@ -686,20 +1397,25 @@
         "tags": [
           "Usuario"
         ],
+        "summary": "Excluir usuário",
+        "description": "Remove um usuário da plataforma.",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string",
-              "format": "uuid"
+              "type": "integer",
+              "format": "int32"
             }
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
+          "204": {
+            "description": "Usuário removido com sucesso"
+          },
+          "404": {
+            "description": "Usuário não encontrado"
           }
         }
       }
@@ -709,6 +1425,8 @@
         "tags": [
           "Usuario"
         ],
+        "summary": "Listar habilidades de um usuário",
+        "description": "Retorna todas as habilidades vinculadas ao usuário.",
         "parameters": [
           {
             "name": "id",
@@ -716,52 +1434,16 @@
             "required": true,
             "schema": {
               "type": "string",
-              "format": "uuid"
+              "format": "int32"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/WeatherForecast": {
-      "get": {
-        "tags": [
-          "WeatherForecast"
-        ],
-        "operationId": "GetWeatherForecast",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/WeatherForecast"
-                  }
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/WeatherForecast"
-                  }
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/WeatherForecast"
-                  }
-                }
-              }
-            }
+            "description": "Habilidades encontradas"
+          },
+          "404": {
+            "description": "Usuário não encontrado"
           }
         }
       }
@@ -769,7 +1451,7 @@
   },
   "components": {
     "schemas": {
-      "Avaliacao": {
+      "AvaliacaoDTO": {
         "required": [
           "avaliadoId",
           "avaliadorId",
@@ -779,33 +1461,22 @@
         "type": "object",
         "properties": {
           "id": {
-            "type": "string",
-            "format": "uuid"
+            "type": "integer",
+            "format": "int32"
           },
           "trocaId": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "troca": {
-            "$ref": "#/components/schemas/Troca"
+            "type": "integer",
+            "format": "int32"
           },
           "avaliadorId": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "avaliador": {
-            "$ref": "#/components/schemas/Usuario"
+            "type": "integer",
+            "format": "int32"
           },
           "avaliadoId": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "avaliado": {
-            "$ref": "#/components/schemas/Usuario"
+            "type": "integer",
+            "format": "int32"
           },
           "nota": {
-            "maximum": 5,
-            "minimum": 1,
             "type": "integer",
             "format": "int32"
           },
@@ -820,7 +1491,7 @@
         },
         "additionalProperties": false
       },
-      "Habilidade": {
+      "HabilidadeDTO": {
         "required": [
           "categoria",
           "isOffering",
@@ -832,24 +1503,24 @@
         "type": "object",
         "properties": {
           "id": {
-            "type": "string",
-            "format": "uuid"
+            "type": "integer",
+            "format": "int32"
           },
           "nome": {
-            "minLength": 1,
-            "type": "string"
+            "type": "string",
+            "nullable": true
           },
           "categoria": {
-            "minLength": 1,
-            "type": "string"
+            "type": "string",
+            "nullable": true
           },
           "descricao": {
             "type": "string",
             "nullable": true
           },
           "nivel": {
-            "minLength": 1,
-            "type": "string"
+            "type": "string",
+            "nullable": true
           },
           "isOffering": {
             "type": "boolean"
@@ -863,11 +1534,8 @@
             "nullable": true
           },
           "usuarioId": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "usuario": {
-            "$ref": "#/components/schemas/Usuario"
+            "type": "integer",
+            "format": "int32"
           },
           "dataCriacao": {
             "type": "string",
@@ -876,7 +1544,47 @@
         },
         "additionalProperties": false
       },
-      "Transacao": {
+      "LoginRequest": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "fullName": {
+            "type": "string",
+            "nullable": true
+          },
+          "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "role": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "TokenResponse": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "nullable": true
+          },
+          "expiresIn": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "type": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "TransacaoDTO": {
         "required": [
           "creditos",
           "destinatarioId",
@@ -887,46 +1595,37 @@
         "type": "object",
         "properties": {
           "id": {
-            "type": "string",
-            "format": "uuid"
+            "type": "integer",
+            "format": "int32"
           },
           "trocaId": {
-            "type": "string",
-            "format": "uuid",
+            "type": "integer",
+            "format": "int32",
             "nullable": true
           },
-          "troca": {
-            "$ref": "#/components/schemas/Troca"
-          },
           "remetenteId": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "remetente": {
-            "$ref": "#/components/schemas/Usuario"
+            "type": "integer",
+            "format": "int32"
           },
           "destinatarioId": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "destinatario": {
-            "$ref": "#/components/schemas/Usuario"
+            "type": "integer",
+            "format": "int32"
           },
           "creditos": {
             "type": "number",
             "format": "double"
           },
           "tipo": {
-            "minLength": 1,
-            "type": "string"
+            "type": "string",
+            "nullable": true
           },
           "descricao": {
             "type": "string",
             "nullable": true
           },
           "status": {
-            "minLength": 1,
-            "type": "string"
+            "type": "string",
+            "nullable": true
           },
           "dataCriacao": {
             "type": "string",
@@ -935,7 +1634,7 @@
         },
         "additionalProperties": false
       },
-      "Troca": {
+      "TrocaDTO": {
         "required": [
           "alunoId",
           "durationHours",
@@ -947,29 +1646,20 @@
         "type": "object",
         "properties": {
           "id": {
-            "type": "string",
-            "format": "uuid"
+            "type": "integer",
+            "format": "int32"
           },
           "mentorId": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "mentor": {
-            "$ref": "#/components/schemas/Usuario"
+            "type": "integer",
+            "format": "int32"
           },
           "alunoId": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "aluno": {
-            "$ref": "#/components/schemas/Usuario"
+            "type": "integer",
+            "format": "int32"
           },
           "habilidadeId": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "habilidade": {
-            "$ref": "#/components/schemas/Habilidade"
+            "type": "integer",
+            "format": "int32"
           },
           "skillName": {
             "type": "string",
@@ -984,8 +1674,8 @@
             "format": "double"
           },
           "status": {
-            "minLength": 1,
-            "type": "string"
+            "type": "string",
+            "nullable": true
           },
           "meetingLink": {
             "type": "string",
@@ -1003,60 +1693,50 @@
           "createdDate": {
             "type": "string",
             "format": "date-time"
-          },
-          "transacoes": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Transacao"
-            },
-            "nullable": true
-          },
-          "avaliacoes": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Avaliacao"
-            },
-            "nullable": true
           }
         },
         "additionalProperties": false
       },
-      "Usuario": {
-        "required": [
-          "email",
-          "fullName",
-          "password",
-          "role",
-          "timeCredits"
-        ],
+      "UsuarioDTO": {
         "type": "object",
         "properties": {
           "id": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "email": {
-            "minLength": 1,
-            "type": "string",
-            "format": "email"
+            "type": "integer",
+            "format": "int32"
           },
           "fullName": {
-            "minLength": 1,
-            "type": "string"
+            "type": "string",
+            "nullable": true
+          },
+          "email": {
+            "type": "string",
+            "nullable": true
           },
           "password": {
-            "minLength": 1,
-            "type": "string"
+            "type": "string",
+            "nullable": true
           },
           "role": {
-            "minLength": 1,
-            "type": "string"
+            "type": "string",
+            "nullable": true
           },
           "bio": {
             "type": "string",
             "nullable": true
           },
           "avatarUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "location": {
+            "type": "string",
+            "nullable": true
+          },
+          "timezone": {
+            "type": "string",
+            "nullable": true
+          },
+          "linkedinUrl": {
             "type": "string",
             "nullable": true
           },
@@ -1076,83 +1756,9 @@
             "type": "number",
             "format": "double"
           },
-          "location": {
-            "type": "string",
-            "nullable": true
-          },
-          "timezone": {
-            "type": "string",
-            "nullable": true
-          },
-          "linkedinUrl": {
-            "type": "string",
-            "nullable": true
-          },
           "createdDate": {
             "type": "string",
             "format": "date-time"
-          },
-          "updatedDate": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "habilidades": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Habilidade"
-            },
-            "nullable": true
-          },
-          "trocasComoMentor": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Troca"
-            },
-            "nullable": true
-          },
-          "trocasComoAluno": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Troca"
-            },
-            "nullable": true
-          },
-          "avaliacoesFeitas": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Avaliacao"
-            },
-            "nullable": true
-          },
-          "avaliacoesRecebidas": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Avaliacao"
-            },
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "WeatherForecast": {
-        "type": "object",
-        "properties": {
-          "date": {
-            "type": "string",
-            "format": "date"
-          },
-          "temperatureC": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "temperatureF": {
-            "type": "integer",
-            "format": "int32",
-            "readOnly": true
-          },
-          "summary": {
-            "type": "string",
-            "nullable": true
           }
         },
         "additionalProperties": false
@@ -1160,10 +1766,10 @@
     },
     "securitySchemes": {
       "Bearer": {
-        "type": "apiKey",
-        "description": "Insira: Bearer {token}",
-        "name": "Authorization",
-        "in": "header"
+        "type": "http",
+        "description": "Insira **apenas o token JWT**. O prefixo 'Bearer' será adicionado automaticamente.",
+        "scheme": "Bearer",
+        "bearerFormat": "JWT"
       }
     }
   },

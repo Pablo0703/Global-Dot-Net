@@ -1,6 +1,7 @@
-﻿public class HabilidadeDTO
+﻿namespace Presentation.DTOs;
+public class HabilidadeDTO
 {
-    public Guid Id { get; set; }
+    public int Id { get; set; }
 
     public required string Nome { get; set; }
 
@@ -16,7 +17,7 @@
 
     public double? ValorPorHora { get; set; }
 
-    public required Guid UsuarioId { get; set; }
+    public required int UsuarioId { get; set; }
 
     public DateTime DataCriacao { get; set; }
 }

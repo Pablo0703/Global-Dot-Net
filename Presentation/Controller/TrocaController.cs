@@ -1,6 +1,8 @@
 ﻿using Application.Interface;
 using Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
+using Presentation.DTOs;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace Presentation.Controllers.v1
 {
@@ -18,54 +20,161 @@ namespace Presentation.Controllers.v1
 
         // ➕ Criar
         [HttpPost]
-        public async Task<IActionResult> Criar([FromBody] Troca troca)
+        [SwaggerOperation(
+            Summary = "Criar troca",
+            Description = "Cria uma nova troca entre mentor e aluno, vinculada a uma habilidade."
+        )]
+        [SwaggerResponse(201, "Troca criada com sucesso", typeof(TrocaDTO))]
+        [SwaggerResponse(400, "Dados inválidos")]
+        public async Task<IActionResult> Criar([FromBody] TrocaDTO dto)
         {
-            var criado = await _service.Criar(troca);
-            return CreatedAtAction(nameof(BuscarPorId), new { id = criado.Id, version = "1" }, criado);
+            var entity = FromDTO(dto);
+            var criado = await _service.Criar(entity);
+
+            return CreatedAtAction(nameof(BuscarPorId),
+                new { id = criado.Id, version = "1" },
+                ToDTO(criado));
         }
 
         // 🔎 Buscar por ID
-        [HttpGet("{id:guid}")]
-        public async Task<IActionResult> BuscarPorId(Guid id)
+        [HttpGet("{id:int}")]
+        [SwaggerOperation(
+            Summary = "Buscar troca por ID",
+            Description = "Retorna os detalhes de uma troca específica."
+        )]
+        [SwaggerResponse(200, "Troca encontrada", typeof(TrocaDTO))]
+        [SwaggerResponse(404, "Troca não encontrada")]
+        public async Task<IActionResult> BuscarPorId(int id)
         {
             var troca = await _service.BuscarPorId(id);
-            return troca == null ? NotFound() : Ok(troca);
+            return troca == null ? NotFound() : Ok(ToDTO(troca));
         }
 
-        // 📄 Listar
+        // 📄 Listar todas
         [HttpGet]
+        [SwaggerOperation(
+            Summary = "Listar trocas",
+            Description = "Lista todas as trocas cadastradas no sistema."
+        )]
+        [SwaggerResponse(200, "Lista retornada com sucesso")]
         public async Task<IActionResult> Listar()
         {
-            return Ok(await _service.Listar());
+            var lista = await _service.Listar();
+            return Ok(lista.Select(ToDTO));
         }
 
         // 📄 Listar por mentor
-        [HttpGet("mentor/{id:guid}")]
-        public async Task<IActionResult> ListarPorMentor(Guid id)
+        [HttpGet("mentor/{mentorId:int}")]
+        [SwaggerOperation(
+            Summary = "Listar trocas por mentor",
+            Description = "Retorna todas as trocas em que o usuário atua como mentor."
+        )]
+        [SwaggerResponse(200, "Lista retornada com sucesso")]
+        public async Task<IActionResult> ListarPorMentor(int mentorId)
         {
-            return Ok(await _service.ListarPorMentor(id));
+            var lista = await _service.ListarPorMentor(mentorId);
+            return Ok(lista.Select(ToDTO));
         }
 
         // 📄 Listar por aluno
-        [HttpGet("aluno/{id:guid}")]
-        public async Task<IActionResult> ListarPorAluno(Guid id)
+        [HttpGet("aluno/{alunoId:int}")]
+        [SwaggerOperation(
+            Summary = "Listar trocas por aluno",
+            Description = "Retorna todas as trocas em que o usuário atua como aluno."
+        )]
+        [SwaggerResponse(200, "Lista retornada com sucesso")]
+        public async Task<IActionResult> ListarPorAluno(int alunoId)
         {
-            return Ok(await _service.ListarPorAluno(id));
+            var lista = await _service.ListarPorAluno(alunoId);
+            return Ok(lista.Select(ToDTO));
         }
 
-        // 🔄 Atualizar status
-        [HttpPatch("{id:guid}/status")]
-        public async Task<IActionResult> AtualizarStatus(Guid id, [FromBody] string status)
+        // 🔄 Atualizar COMPLETO
+        [HttpPut("{id:int}")]
+        [SwaggerOperation(
+            Summary = "Atualizar troca",
+            Description = "Atualiza os dados de uma troca (exceto status)."
+        )]
+        [SwaggerResponse(200, "Troca atualizada com sucesso", typeof(TrocaDTO))]
+        [SwaggerResponse(404, "Troca não encontrada")]
+        public async Task<IActionResult> Atualizar(int id, [FromBody] TrocaDTO dto)
+        {
+            var entity = FromDTO(dto);
+            entity.Id = id;
+
+            var atualizado = await _service.AtualizarStatus(id, dto.Status);
+            return atualizado == null ? NotFound() : Ok(ToDTO(atualizado));
+        }
+
+        // 🔄 Atualizar status específico (PATCH)
+        [HttpPatch("{id:int}/status")]
+        [SwaggerOperation(
+            Summary = "Atualizar status da troca",
+            Description = "Atualiza apenas o status da troca (AGENDADA, CONFIRMADA, CONCLUIDA...)."
+        )]
+        [SwaggerResponse(200, "Status atualizado com sucesso", typeof(TrocaDTO))]
+        [SwaggerResponse(404, "Troca não encontrada")]
+        public async Task<IActionResult> AtualizarStatus(int id, [FromBody] string status)
         {
             var atualizado = await _service.AtualizarStatus(id, status);
-            return atualizado == null ? NotFound() : Ok(atualizado);
+            return atualizado == null ? NotFound() : Ok(ToDTO(atualizado));
         }
 
         // ❌ Deletar
-        [HttpDelete("{id:guid}")]
-        public async Task<IActionResult> Deletar(Guid id)
+        [HttpDelete("{id:int}")]
+        [SwaggerOperation(
+            Summary = "Excluir troca",
+            Description = "Remove permanentemente uma troca do sistema."
+        )]
+        [SwaggerResponse(204, "Troca removida com sucesso")]
+        [SwaggerResponse(404, "Troca não encontrada")]
+        public async Task<IActionResult> Deletar(int id)
         {
-            return await _service.Deletar(id) ? NoContent() : NotFound();
+            var ok = await _service.Deletar(id);
+            return ok ? NoContent() : NotFound();
+        }
+
+        // ============================================================
+        // 🔵 MAPEAMENTO ENTITY → DTO
+        // ============================================================
+        private static TrocaDTO ToDTO(Troca t)
+        {
+            return new TrocaDTO
+            {
+                Id = t.Id,
+                MentorId = t.MentorId,
+                AlunoId = t.AlunoId,
+                HabilidadeId = t.HabilidadeId,
+                SkillName = t.SkillName,
+                ScheduledDate = t.ScheduledDate,
+                DurationHours = t.DurationHours,
+                Status = t.Status,
+                MeetingLink = t.MeetingLink,
+                Notes = t.Notes,
+                CreditsValue = t.CreditsValue,
+                CreatedDate = t.CreatedDate
+            };
+        }
+
+        // ============================================================
+        // 🔵 MAPEAMENTO DTO → ENTITY
+        // ============================================================
+        private static Troca FromDTO(TrocaDTO dto)
+        {
+            return new Troca
+            {
+                MentorId = dto.MentorId,
+                AlunoId = dto.AlunoId,
+                HabilidadeId = dto.HabilidadeId,
+                SkillName = dto.SkillName,
+                ScheduledDate = dto.ScheduledDate,
+                DurationHours = dto.DurationHours,
+                Status = dto.Status,
+                MeetingLink = dto.MeetingLink,
+                Notes = dto.Notes,
+                CreditsValue = dto.CreditsValue,
+                CreatedDate = dto.CreatedDate == default ? DateTime.UtcNow : dto.CreatedDate
+            };
         }
     }
 }

@@ -8,7 +8,6 @@
 
 	<ItemGroup>
 		<!-- ✔ EF Core 7 (compatível com Oracle) -->
-		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.0" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.20" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.20">
 			<PrivateAssets>all</PrivateAssets>
@@ -24,15 +23,20 @@
 
 		<!-- ✔ Swagger -->
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
+		<PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="6.6.2" />
+
 
 		<!-- ✔ AutoMapper -->
 		<PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
 
-		<!-- ✔ Health Checks -->
+		<!-- ✔ Health Check UI (opcional, apenas para resposta bonita) -->
 		<PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="8.0.0" />
+
+		<!-- ✔ JWT -->
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.0" />
+		<PackageReference Include="Swashbuckle.AspNetCore.Filters" Version="7.0.4" />
 		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.0.5" />
 
-		<!-- ❌ Rate Limiting REMOVIDO (já está embutido no .NET 8) -->
 	</ItemGroup>
 
 </Project>

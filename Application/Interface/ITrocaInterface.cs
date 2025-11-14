@@ -1,29 +1,18 @@
 ﻿using Domain.Entities;
-using System.Diagnostics;
 
 namespace Application.Interface
 {
     public interface ITrocaInterface
     {
-        // ➕ Criar
         Task<Troca> Criar(Troca troca);
-
-        // 🔎 Buscar por ID
-        Task<Troca?> BuscarPorId(Guid id);
-
-        // 📄 Listar todas
+        Task<Troca?> BuscarPorId(int id);
         Task<IEnumerable<Troca>> Listar();
 
-        // 📄 Listar por mentor
-        Task<IEnumerable<Troca>> ListarPorMentor(Guid mentorId);
+        Task<IEnumerable<Troca>> ListarPorMentor(int mentorId);
+        Task<IEnumerable<Troca>> ListarPorAluno(int alunoId);
 
-        // 📄 Listar por aluno
-        Task<IEnumerable<Troca>> ListarPorAluno(Guid alunoId);
+        Task<Troca?> AtualizarStatus(int id, string status);
 
-        // 🔄 Atualizar status
-        Task<Troca?> AtualizarStatus(Guid id, string status);
-
-        // ❌ Remover
-        Task<bool> Deletar(Guid id);
+        Task<bool> Deletar(int id);
     }
 }

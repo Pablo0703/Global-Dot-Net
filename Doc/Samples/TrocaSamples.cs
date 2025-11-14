@@ -1,33 +1,34 @@
 ﻿using Domain.Entities;
-using System.Diagnostics;
 
 namespace Presentation.Doc.Samples
 {
     public static class TrocaSamples
     {
-        // 📥 Request
+        // 📥 REQUEST SAMPLE
         public static readonly Troca TrocaRequest = new Troca
         {
-            MentorId = Guid.NewGuid(),
-            AlunoId = Guid.NewGuid(),
-            HabilidadeId = Guid.NewGuid(),
+            MentorId = 1,
+            AlunoId = 2,
+            HabilidadeId = 10,
             SkillName = "Python para iniciantes",
             ScheduledDate = DateTime.UtcNow.AddDays(2),
             DurationHours = 1.5,
-            Status = Troca.AGENDADA,
+            Status = "AGENDADA",
             MeetingLink = "https://meet.google.com/abc-123"
         };
 
-        // 📤 Response
+        // 📤 RESPONSE SAMPLE
         public static readonly object TrocaResponse = new
         {
-            Id = Guid.NewGuid(),
-            MentorId = Guid.NewGuid(),
-            AlunoId = Guid.NewGuid(),
+            Id = 100,
+            MentorId = 1,
+            AlunoId = 2,
+            HabilidadeId = 10,
             SkillName = "Python para iniciantes",
-            Status = "AGENDADA",
             ScheduledDate = DateTime.UtcNow.AddDays(2),
-            DurationHours = 1.5
+            DurationHours = 1.5,
+            Status = "AGENDADA",
+            MeetingLink = "https://meet.google.com/abc-123"
         };
     }
 }

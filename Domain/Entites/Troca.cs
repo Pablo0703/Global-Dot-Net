@@ -18,13 +18,13 @@ namespace Domain.Entities
 
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid Id { get; set; }
+        public int Id { get; set; }
 
         // 🧑‍🏫 Mentor (quem ensina)
 
         [Required]
         [Column("MENTOR_ID")]
-        public Guid MentorId { get; set; }
+        public  int MentorId { get; set; }
 
         public Usuario Mentor { get; set; } = null!;
 
@@ -32,7 +32,7 @@ namespace Domain.Entities
 
         [Required]
         [Column("ALUNO_ID")]
-        public Guid AlunoId { get; set; }
+        public int AlunoId { get; set; }
 
         public Usuario Aluno { get; set; } = null!;
 
@@ -40,7 +40,7 @@ namespace Domain.Entities
 
         [Required]
         [Column("HABILIDADE_ID")]
-        public Guid HabilidadeId { get; set; }
+        public int HabilidadeId { get; set; }
 
         public Habilidade Habilidade { get; set; } = null!;
 

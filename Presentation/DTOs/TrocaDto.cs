@@ -1,12 +1,14 @@
-﻿public class TrocaDTO
+﻿namespace Presentation.DTOs;
+
+public class TrocaDTO
 {
-    public Guid Id { get; set; }
+    public int Id { get; set; }
 
-    public required Guid MentorId { get; set; }
+    public required int MentorId { get; set; }
 
-    public required Guid AlunoId { get; set; }
+    public required int AlunoId { get; set; }
 
-    public required Guid HabilidadeId { get; set; }
+    public required int HabilidadeId { get; set; }
 
     public string? SkillName { get; set; }
 

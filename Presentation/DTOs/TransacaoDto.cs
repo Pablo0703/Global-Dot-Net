@@ -1,12 +1,14 @@
-﻿public class TransacaoDTO
+﻿namespace Presentation.DTOs;
+
+public class TransacaoDTO
 {
-    public Guid Id { get; set; }
+    public int Id { get; set; }
 
-    public Guid? TrocaId { get; set; }
+    public int? TrocaId { get; set; }
 
-    public required Guid RemetenteId { get; set; }
+    public required int RemetenteId { get; set; }
 
-    public required Guid DestinatarioId { get; set; }
+    public required int DestinatarioId { get; set; }
 
     public required double Creditos { get; set; }
 

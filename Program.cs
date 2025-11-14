@@ -1,9 +1,12 @@
-﻿using Infrastructure.IoC;
+﻿using HealthChecks.UI.Client;
+using Infrastructure.IoC;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.Filters;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,7 +22,6 @@ builder.Services.AddApiVersioning(options =>
     options.ApiVersionReader = new UrlSegmentApiVersionReader();
 });
 
-// Necessário para Swagger reconhecer versões
 builder.Services.AddVersionedApiExplorer(options =>
 {
     options.GroupNameFormat = "'v'VVV";
@@ -44,40 +46,47 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateIssuerSigningKey = true,
             ValidIssuer = jwtSection["Issuer"],
             ValidAudience = jwtSection["Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSection["Key"]!)),
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(jwtSection["Key"]!)
+            ),
             ClockSkew = TimeSpan.Zero
         };
     });
 
 // =========================
-// 🔵 IoC
+// 🔵 IOC
 // =========================
 builder.Services.AddIoC(builder.Configuration);
 
 // =========================
-// 🔵 Controllers
+// 🔵 CONTROLLERS
 // =========================
 builder.Services.AddControllers();
 
 // =========================
-// 🔵 Swagger
+// 🔵 SWAGGER
 // =========================
 builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo
     {
-        Title = "Troca Comigo API v1",
-        Version = "v1"
+        Title = "Troca Comigo API",
+        Version = "v1",
+        Description = "API do Global Solution FIAP – Skill Swap Hub"
     });
 
+    options.EnableAnnotations();
+    options.ExampleFilters();
+
+    // 🔐 JWT - CONFIGURAÇÃO CORRETA
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
+        Description = "Insira **apenas o token JWT**. O prefixo 'Bearer' será adicionado automaticamente.",
         Name = "Authorization",
-        Type = SecuritySchemeType.ApiKey,
-        Scheme = "Bearer",
-        BearerFormat = "JWT",
         In = ParameterLocation.Header,
-        Description = "Insira: Bearer {token}"
+        Type = SecuritySchemeType.Http,
+        Scheme = "Bearer",
+        BearerFormat = "JWT"
     });
 
     options.AddSecurityRequirement(new OpenApiSecurityRequirement
@@ -96,6 +105,8 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
+builder.Services.AddSwaggerExamplesFromAssemblyOf<Program>();
+
 // =========================
 // 🔵 APP
 // =========================
@@ -105,11 +116,28 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 
+// Swagger
 app.UseSwagger();
 app.UseSwaggerUI(options =>
 {
     options.SwaggerEndpoint("/swagger/v1/swagger.json", "Troca Comigo API v1");
 });
 
+// =========================
+// 🔵 HEALTH CHECK ENDPOINTS
+// =========================
+app.MapHealthChecks("/health/live", new HealthCheckOptions
+{
+    Predicate = h => h.Tags.Contains("live")
+});
+
+app.MapHealthChecks("/health/ready", new HealthCheckOptions
+{
+    Predicate = h => h.Tags.Contains("ready"),
+    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+});
+
+// Controllers
 app.MapControllers();
+
 app.Run();

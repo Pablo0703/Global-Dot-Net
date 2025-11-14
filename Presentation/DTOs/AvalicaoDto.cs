@@ -1,12 +1,13 @@
-﻿public class AvaliacaoDTO
+﻿namespace Presentation.DTOs;
+public class AvaliacaoDTO
 {
-    public Guid Id { get; set; }
+    public int Id { get; set; }
 
-    public required Guid TrocaId { get; set; }
+    public required int TrocaId { get; set; }
 
-    public required Guid AvaliadorId { get; set; }
+    public required int AvaliadorId { get; set; }
 
-    public required Guid AvaliadoId { get; set; }
+    public required int AvaliadoId { get; set; }
 
     public required int Nota { get; set; }
 

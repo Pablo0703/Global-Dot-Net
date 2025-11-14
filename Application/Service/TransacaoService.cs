@@ -2,7 +2,6 @@
 using Domain.Entities;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
-using System;
 
 namespace Application.Service
 {
@@ -15,16 +14,15 @@ namespace Application.Service
             _context = context;
         }
 
-        // ➕ Criar
         public async Task<Transacao> Criar(Transacao transacao)
         {
+            transacao.DataCriacao = DateTime.UtcNow;
             _context.Transacoes.Add(transacao);
             await _context.SaveChangesAsync();
             return transacao;
         }
 
-        // 🔎 Buscar por ID
-        public async Task<Transacao?> BuscarPorId(Guid id)
+        public async Task<Transacao?> BuscarPorId(int id)
         {
             return await _context.Transacoes
                 .Include(t => t.Remetente)
@@ -32,22 +30,50 @@ namespace Application.Service
                 .FirstOrDefaultAsync(t => t.Id == id);
         }
 
-        // 📄 Listar
         public async Task<IEnumerable<Transacao>> Listar()
         {
             return await _context.Transacoes.ToListAsync();
         }
 
-        // 📄 Listar por usuário
-        public async Task<IEnumerable<Transacao>> ListarPorUsuario(Guid usuarioId)
+        public async Task<IEnumerable<Transacao>> ListarPorUsuario(int usuarioId)
         {
             return await _context.Transacoes
                 .Where(t => t.RemetenteId == usuarioId || t.DestinatarioId == usuarioId)
                 .ToListAsync();
         }
 
-        // 🔄 Concluir
-        public async Task<Transacao?> Concluir(Guid id)
+        // 🟢 ATUALIZAR
+        public async Task<Transacao?> Atualizar(int id, Transacao dados)
+        {
+            var t = await _context.Transacoes.FindAsync(id);
+            if (t == null)
+                return null;
+
+            t.TrocaId = dados.TrocaId;
+            t.RemetenteId = dados.RemetenteId;
+            t.DestinatarioId = dados.DestinatarioId;
+            t.Creditos = dados.Creditos;
+            t.Tipo = dados.Tipo;
+            t.Descricao = dados.Descricao;
+            t.Status = dados.Status;
+
+            await _context.SaveChangesAsync();
+            return t;
+        }
+
+        // 🛑 DELETAR
+        public async Task<bool> Deletar(int id)
+        {
+            var t = await _context.Transacoes.FindAsync(id);
+            if (t == null) return false;
+
+            _context.Transacoes.Remove(t);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        // 🔄 CONCLUIR
+        public async Task<Transacao?> Concluir(int id)
         {
             var t = await _context.Transacoes.FindAsync(id);
             if (t == null) return null;
@@ -57,8 +83,8 @@ namespace Application.Service
             return t;
         }
 
-        // 🔄 Estornar
-        public async Task<Transacao?> Estornar(Guid id)
+        // 🔄 ESTORNAR
+        public async Task<Transacao?> Estornar(int id)
         {
             var t = await _context.Transacoes.FindAsync(id);
             if (t == null) return null;

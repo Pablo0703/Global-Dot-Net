@@ -1,9 +1,12 @@
 ﻿using Application.Interface;
 using Application.Service;
+using Application.Service.Auth;
 using Infrastructure.Data;
+using Infrastructure.HealthCheck;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace Infrastructure.IoC
 {
@@ -29,6 +32,15 @@ namespace Infrastructure.IoC
 
             // ⭐ Avaliacao
             services.AddScoped<IAvaliacaoInterface, AvaliacaoService>();
+
+            // 🔵 HEALTH CHECKS (REGISTRAR APENAS AQUI!)
+            services.AddHealthChecks()
+                .AddCheck("api_alive", () => HealthCheckResult.Healthy(), tags: new[] { "live" })
+                .AddCheck<OracleHealthCheck>("oracle", tags: new[] { "ready" });
+
+            // 🔐 JWT Service
+            services.AddScoped<JwtService>();
+
 
             return services;
         }

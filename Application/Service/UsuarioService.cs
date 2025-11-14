@@ -24,7 +24,7 @@ namespace Application.Service
         }
 
         // 🔎 Buscar por ID
-        public async Task<Usuario?> BuscarPorId(Guid id)
+        public async Task<Usuario?> BuscarPorId(int id)
         {
             return await _context.Usuarios
                 .Include(u => u.Habilidades)
@@ -47,7 +47,7 @@ namespace Application.Service
         }
 
         // ✏️ Atualizar
-        public async Task<Usuario?> Atualizar(Guid id, Usuario usuario)
+        public async Task<Usuario?> Atualizar(int id, Usuario usuario)
         {
             var existente = await _context.Usuarios.FindAsync(id);
             if (existente == null) return null;
@@ -64,7 +64,7 @@ namespace Application.Service
         }
 
         // ❌ Deletar
-        public async Task<bool> Deletar(Guid id)
+        public async Task<bool> Deletar(int id)
         {
             var usuario = await _context.Usuarios.FindAsync(id);
             if (usuario == null) return false;

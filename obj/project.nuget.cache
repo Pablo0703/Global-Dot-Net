@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "69wiCO9SMRU=",
+  "dgSpecHash": "a8lSyy2OUHM=",
   "success": true,
   "projectFilePath": "C:\\Users\\Microsoft\\Desktop\\DotNet\\Troca_Comigo_GS\\Troca_Comigo_GS\\Troca_Comigo_GS.csproj",
   "expectedPackageFiles": [
@@ -46,7 +46,11 @@
     "C:\\Users\\Microsoft\\.nuget\\packages\\mono.texttemplating\\2.2.1\\mono.texttemplating.2.2.1.nupkg.sha512",
     "C:\\Users\\Microsoft\\.nuget\\packages\\oracle.entityframeworkcore\\7.21.8\\oracle.entityframeworkcore.7.21.8.nupkg.sha512",
     "C:\\Users\\Microsoft\\.nuget\\packages\\oracle.manageddataaccess.core\\3.21.80\\oracle.manageddataaccess.core.3.21.80.nupkg.sha512",
+    "C:\\Users\\Microsoft\\.nuget\\packages\\scrutor\\3.3.0\\scrutor.3.3.0.nupkg.sha512",
     "C:\\Users\\Microsoft\\.nuget\\packages\\swashbuckle.aspnetcore\\6.6.2\\swashbuckle.aspnetcore.6.6.2.nupkg.sha512",
+    "C:\\Users\\Microsoft\\.nuget\\packages\\swashbuckle.aspnetcore.annotations\\6.6.2\\swashbuckle.aspnetcore.annotations.6.6.2.nupkg.sha512",
+    "C:\\Users\\Microsoft\\.nuget\\packages\\swashbuckle.aspnetcore.filters\\7.0.4\\swashbuckle.aspnetcore.filters.7.0.4.nupkg.sha512",
+    "C:\\Users\\Microsoft\\.nuget\\packages\\swashbuckle.aspnetcore.filters.abstractions\\7.0.4\\swashbuckle.aspnetcore.filters.abstractions.7.0.4.nupkg.sha512",
     "C:\\Users\\Microsoft\\.nuget\\packages\\swashbuckle.aspnetcore.swagger\\6.6.2\\swashbuckle.aspnetcore.swagger.6.6.2.nupkg.sha512",
     "C:\\Users\\Microsoft\\.nuget\\packages\\swashbuckle.aspnetcore.swaggergen\\6.6.2\\swashbuckle.aspnetcore.swaggergen.6.6.2.nupkg.sha512",
     "C:\\Users\\Microsoft\\.nuget\\packages\\swashbuckle.aspnetcore.swaggerui\\6.6.2\\swashbuckle.aspnetcore.swaggerui.6.6.2.nupkg.sha512",

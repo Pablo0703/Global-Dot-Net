@@ -8,7 +8,7 @@ namespace Application.Interface
         Task<Usuario> Criar(Usuario usuario);
 
         // 🔎 Buscar por ID
-        Task<Usuario?> BuscarPorId(Guid id);
+        Task<Usuario?> BuscarPorId(int id);
 
         // 📧 Buscar por e-mail
         Task<Usuario?> BuscarPorEmail(string email);
@@ -17,9 +17,9 @@ namespace Application.Interface
         Task<IEnumerable<Usuario>> Listar();
 
         // ✏️ Atualizar
-        Task<Usuario?> Atualizar(Guid id, Usuario usuario);
+        Task<Usuario?> Atualizar(int id, Usuario usuario);
 
         // ❌ Remover
-        Task<bool> Deletar(Guid id);
+        Task<bool> Deletar(int id);
     }
 }

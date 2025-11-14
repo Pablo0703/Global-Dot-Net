@@ -4,22 +4,15 @@ namespace Application.Interface
 {
     public interface ITransacaoInterface
     {
-        // ➕ Criar
         Task<Transacao> Criar(Transacao transacao);
-
-        // 🔎 Buscar por ID
-        Task<Transacao?> BuscarPorId(Guid id);
-
-        // 📄 Listar todas
+        Task<Transacao?> BuscarPorId(int id);
         Task<IEnumerable<Transacao>> Listar();
+        Task<IEnumerable<Transacao>> ListarPorUsuario(int usuarioId);
 
-        // 📄 Listar por usuário
-        Task<IEnumerable<Transacao>> ListarPorUsuario(Guid usuarioId);
+        Task<Transacao?> Atualizar(int id, Transacao dados); // <-- ADICIONADO
+        Task<bool> Deletar(int id);                          // <-- ADICIONADO
 
-        // 🔄 Concluir transação
-        Task<Transacao?> Concluir(Guid id);
-
-        // 🔄 Estornar
-        Task<Transacao?> Estornar(Guid id);
+        Task<Transacao?> Concluir(int id);
+        Task<Transacao?> Estornar(int id);
     }
 }

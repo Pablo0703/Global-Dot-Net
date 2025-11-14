@@ -2,8 +2,6 @@
 using Domain.Entities;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Diagnostics;
 
 namespace Application.Service
 {
@@ -16,16 +14,15 @@ namespace Application.Service
             _context = context;
         }
 
-        // ➕ Criar
         public async Task<Troca> Criar(Troca troca)
         {
+            troca.CreatedDate = DateTime.UtcNow;
             _context.Trocas.Add(troca);
             await _context.SaveChangesAsync();
             return troca;
         }
 
-        // 🔎 Buscar por ID
-        public async Task<Troca?> BuscarPorId(Guid id)
+        public async Task<Troca?> BuscarPorId(int id)
         {
             return await _context.Trocas
                 .Include(t => t.Mentor)
@@ -34,30 +31,26 @@ namespace Application.Service
                 .FirstOrDefaultAsync(t => t.Id == id);
         }
 
-        // 📄 Listar
         public async Task<IEnumerable<Troca>> Listar()
         {
             return await _context.Trocas.ToListAsync();
         }
 
-        // 📄 Listar por mentor
-        public async Task<IEnumerable<Troca>> ListarPorMentor(Guid mentorId)
+        public async Task<IEnumerable<Troca>> ListarPorMentor(int mentorId)
         {
             return await _context.Trocas
                 .Where(t => t.MentorId == mentorId)
                 .ToListAsync();
         }
 
-        // 📄 Listar por aluno
-        public async Task<IEnumerable<Troca>> ListarPorAluno(Guid alunoId)
+        public async Task<IEnumerable<Troca>> ListarPorAluno(int alunoId)
         {
             return await _context.Trocas
                 .Where(t => t.AlunoId == alunoId)
                 .ToListAsync();
         }
 
-        // 🔄 Atualizar status
-        public async Task<Troca?> AtualizarStatus(Guid id, string status)
+        public async Task<Troca?> AtualizarStatus(int id, string status)
         {
             var troca = await _context.Trocas.FindAsync(id);
             if (troca == null) return null;
@@ -68,8 +61,7 @@ namespace Application.Service
             return troca;
         }
 
-        // ❌ Deletar
-        public async Task<bool> Deletar(Guid id)
+        public async Task<bool> Deletar(int id)
         {
             var troca = await _context.Trocas.FindAsync(id);
             if (troca == null) return false;
