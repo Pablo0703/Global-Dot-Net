@@ -1,7 +1,9 @@
 ﻿using Application.Interface;
 using Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Presentation.DTOs;
+using Presentation.Hateoas;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace Presentation.Controllers.v1
@@ -20,8 +22,12 @@ namespace Presentation.Controllers.v1
 
         // ➕ Criar
         [HttpPost]
-        [SwaggerOperation(Summary = "Criar habilidade", Description = "Cria uma nova habilidade para um usuário.")]
+        [SwaggerOperation(
+            Summary = "Criar nova habilidade",
+            Description = "Cria uma nova habilidade vinculada a um usuário, incluindo descrição, nível e categoria."
+        )]
         [SwaggerResponse(201, "Habilidade criada com sucesso", typeof(HabilidadeDTO))]
+        [SwaggerResponse(400, "Dados inválidos enviados")]
         public async Task<IActionResult> Criar([FromBody] HabilidadeDTO dto)
         {
             var entidade = FromDTO(dto);
@@ -29,62 +35,112 @@ namespace Presentation.Controllers.v1
 
             return CreatedAtAction(nameof(BuscarPorId),
                 new { id = criado.Id, version = "1" },
-                ToDTO(criado));
+                ToResource(criado));
         }
 
         // 🔎 Buscar por ID
         [HttpGet("{id:int}")]
-        [SwaggerOperation(Summary = "Buscar habilidade por ID")]
+        [SwaggerOperation(
+            Summary = "Buscar habilidade por ID",
+            Description = "Retorna os detalhes de uma habilidade específica cadastrada no sistema."
+        )]
         [SwaggerResponse(200, "Habilidade encontrada", typeof(HabilidadeDTO))]
         [SwaggerResponse(404, "Habilidade não encontrada")]
         public async Task<IActionResult> BuscarPorId(int id)
         {
             var h = await _service.BuscarPorId(id);
-            return h == null ? NotFound() : Ok(ToDTO(h));
+            if (h == null) return NotFound();
+
+            return Ok(ToResource(h));
         }
 
         // 📄 Listar todas
         [HttpGet]
-        [SwaggerOperation(Summary = "Listar todas as habilidades")]
+        [SwaggerOperation(
+            Summary = "Listar habilidades",
+            Description = "Retorna todas as habilidades cadastradas no sistema com links HATEOAS."
+        )]
+        [SwaggerResponse(200, "Lista retornada com sucesso")]
         public async Task<IActionResult> Listar()
         {
             var lista = await _service.Listar();
-            return Ok(lista.Select(ToDTO));
+
+            return Ok(lista.Select(h =>
+            {
+                var dto = ToDTO(h);
+                dto.Links = new()
+                {
+                    new LinkDTO(Url.Action(nameof(BuscarPorId), new { id = h.Id, version = "1" }), "self", "GET")
+                };
+                return dto;
+            }));
         }
 
         // 📄 Listar por usuário
         [HttpGet("usuario/{usuarioId:int}")]
-        [SwaggerOperation(Summary = "Listar habilidades de um usuário específico")]
+        [SwaggerOperation(
+            Summary = "Listar habilidades por usuário",
+            Description = "Retorna todas as habilidades cadastradas para um usuário específico."
+        )]
+        [SwaggerResponse(200, "Lista retornada com sucesso")]
         public async Task<IActionResult> ListarPorUsuario(int usuarioId)
         {
             var lista = await _service.ListarPorUsuario(usuarioId);
-            return Ok(lista.Select(ToDTO));
+
+            return Ok(lista.Select(h =>
+            {
+                var dto = ToDTO(h);
+                dto.Links = new()
+                {
+                    new LinkDTO(Url.Action(nameof(BuscarPorId), new { id = h.Id, version = "1" }), "self", "GET")
+                };
+                return dto;
+            }));
         }
 
         // ✏️ Atualizar
         [HttpPut("{id:int}")]
-        [SwaggerOperation(Summary = "Atualizar habilidade")]
-        [SwaggerResponse(200, "Habilidade atualizada", typeof(HabilidadeDTO))]
+        [SwaggerOperation(
+            Summary = "Atualizar habilidade",
+            Description = "Atualiza os dados de uma habilidade existente no sistema."
+        )]
+        [SwaggerResponse(200, "Habilidade atualizada com sucesso", typeof(HabilidadeDTO))]
         [SwaggerResponse(404, "Habilidade não encontrada")]
         public async Task<IActionResult> Atualizar(int id, [FromBody] HabilidadeDTO dto)
         {
             var atualizado = await _service.Atualizar(id, FromDTO(dto));
-            return atualizado == null ? NotFound() : Ok(ToDTO(atualizado));
+            if (atualizado == null) return NotFound();
+
+            return Ok(ToResource(atualizado));
         }
 
         // ❌ Deletar
         [HttpDelete("{id:int}")]
-        [SwaggerOperation(Summary = "Excluir habilidade")]
-        [SwaggerResponse(204, "Habilidade removida")]
+        [Authorize(Roles = "ADMIN")]
+        [SwaggerOperation(
+            Summary = "Excluir habilidade",
+            Description = "Remove uma habilidade do sistema. Apenas administradores podem realizar essa operação."
+        )]
+        [SwaggerResponse(204, "Habilidade removida com sucesso")]
         [SwaggerResponse(404, "Habilidade não encontrada")]
         public async Task<IActionResult> Deletar(int id)
         {
             return await _service.Deletar(id) ? NoContent() : NotFound();
         }
 
-        // ============================================================
-        // 🔵 MAPEAMENTO ENTITY → DTO
-        // ============================================================
+        // 🔄 HATEOAS
+        private ResourceDTO<HabilidadeDTO> ToResource(Habilidade h)
+        {
+            var dto = ToDTO(h);
+            var res = new ResourceDTO<HabilidadeDTO>(dto);
+
+            res.AddLink(Url.Action(nameof(BuscarPorId), new { id = h.Id, version = "1" }), "self", "GET");
+            res.AddLink(Url.Action(nameof(Atualizar), new { id = h.Id, version = "1" }), "update", "PUT");
+            res.AddLink(Url.Action(nameof(Deletar), new { id = h.Id, version = "1" }), "delete", "DELETE");
+
+            return res;
+        }
+
         private static HabilidadeDTO ToDTO(Habilidade h)
         {
             return new HabilidadeDTO
@@ -102,9 +158,6 @@ namespace Presentation.Controllers.v1
             };
         }
 
-        // ============================================================
-        // 🔵 MAPEAMENTO DTO → ENTITY
-        // ============================================================
         private static Habilidade FromDTO(HabilidadeDTO dto)
         {
             return new Habilidade

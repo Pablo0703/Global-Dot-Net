@@ -9,10 +9,10 @@ using Oracle.EntityFrameworkCore.Metadata;
 
 #nullable disable
 
-namespace Troca_Comigo_GS.Infrastructure.Migrations
+namespace Troca_Comigo_GS.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251113215149_InitialCreate")]
+    [Migration("20251114221115_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -37,16 +37,18 @@ namespace Troca_Comigo_GS.Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.Avaliacao", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("RAW(16)");
+                        .HasColumnType("NUMBER(10)");
 
-                    b.Property<Guid>("AvaliadoId")
-                        .HasColumnType("RAW(16)")
+                    OraclePropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AvaliadoId")
+                        .HasColumnType("NUMBER(10)")
                         .HasColumnName("AVALIADO_ID");
 
-                    b.Property<Guid>("AvaliadorId")
-                        .HasColumnType("RAW(16)")
+                    b.Property<int>("AvaliadorId")
+                        .HasColumnType("NUMBER(10)")
                         .HasColumnName("AVALIADOR_ID");
 
                     b.Property<string>("Comentario")
@@ -61,8 +63,8 @@ namespace Troca_Comigo_GS.Infrastructure.Migrations
                         .HasColumnType("NUMBER(10)")
                         .HasColumnName("NOTA");
 
-                    b.Property<Guid>("TrocaId")
-                        .HasColumnType("RAW(16)")
+                    b.Property<int>("TrocaId")
+                        .HasColumnType("NUMBER(10)")
                         .HasColumnName("TROCA_ID");
 
                     b.HasKey("Id");
@@ -73,14 +75,16 @@ namespace Troca_Comigo_GS.Infrastructure.Migrations
 
                     b.HasIndex("TrocaId");
 
-                    b.ToTable("AVALIACOES");
+                    b.ToTable("AVALIACOES_GS");
                 });
 
             modelBuilder.Entity("Domain.Entities.Habilidade", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("RAW(16)");
+                        .HasColumnType("NUMBER(10)");
+
+                    OraclePropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Categoria")
                         .IsRequired()
@@ -113,8 +117,8 @@ namespace Troca_Comigo_GS.Infrastructure.Migrations
                         .HasColumnType("VARCHAR(150)")
                         .HasColumnName("NOME");
 
-                    b.Property<Guid>("UsuarioId")
-                        .HasColumnType("RAW(16)")
+                    b.Property<int>("UsuarioId")
+                        .HasColumnType("NUMBER(10)")
                         .HasColumnName("USUARIO_ID");
 
                     b.Property<double?>("ValorPorHora")
@@ -125,14 +129,16 @@ namespace Troca_Comigo_GS.Infrastructure.Migrations
 
                     b.HasIndex("UsuarioId");
 
-                    b.ToTable("HABILIDADES");
+                    b.ToTable("HABILIDADES_GS");
                 });
 
             modelBuilder.Entity("Domain.Entities.Transacao", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("RAW(16)");
+                        .HasColumnType("NUMBER(10)");
+
+                    OraclePropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<double>("Creditos")
                         .HasColumnType("BINARY_DOUBLE")
@@ -146,12 +152,12 @@ namespace Troca_Comigo_GS.Infrastructure.Migrations
                         .HasColumnType("VARCHAR(500)")
                         .HasColumnName("DESCRICAO");
 
-                    b.Property<Guid>("DestinatarioId")
-                        .HasColumnType("RAW(16)")
+                    b.Property<int>("DestinatarioId")
+                        .HasColumnType("NUMBER(10)")
                         .HasColumnName("DESTINATARIO_ID");
 
-                    b.Property<Guid>("RemetenteId")
-                        .HasColumnType("RAW(16)")
+                    b.Property<int>("RemetenteId")
+                        .HasColumnType("NUMBER(10)")
                         .HasColumnName("REMETENTE_ID");
 
                     b.Property<string>("Status")
@@ -164,8 +170,8 @@ namespace Troca_Comigo_GS.Infrastructure.Migrations
                         .HasColumnType("VARCHAR(50)")
                         .HasColumnName("TIPO");
 
-                    b.Property<Guid?>("TrocaId")
-                        .HasColumnType("RAW(16)")
+                    b.Property<int?>("TrocaId")
+                        .HasColumnType("NUMBER(10)")
                         .HasColumnName("TROCA_ID");
 
                     b.HasKey("Id");
@@ -176,17 +182,19 @@ namespace Troca_Comigo_GS.Infrastructure.Migrations
 
                     b.HasIndex("TrocaId");
 
-                    b.ToTable("TRANSACOES");
+                    b.ToTable("TRANSACOES_GS");
                 });
 
             modelBuilder.Entity("Domain.Entities.Troca", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("RAW(16)");
+                        .HasColumnType("NUMBER(10)");
 
-                    b.Property<Guid>("AlunoId")
-                        .HasColumnType("RAW(16)")
+                    OraclePropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AlunoId")
+                        .HasColumnType("NUMBER(10)")
                         .HasColumnName("ALUNO_ID");
 
                     b.Property<DateTime>("CreatedDate")
@@ -201,16 +209,16 @@ namespace Troca_Comigo_GS.Infrastructure.Migrations
                         .HasColumnType("BINARY_DOUBLE")
                         .HasColumnName("DURACAO_HORAS");
 
-                    b.Property<Guid>("HabilidadeId")
-                        .HasColumnType("RAW(16)")
+                    b.Property<int>("HabilidadeId")
+                        .HasColumnType("NUMBER(10)")
                         .HasColumnName("HABILIDADE_ID");
 
                     b.Property<string>("MeetingLink")
                         .HasColumnType("VARCHAR(500)")
                         .HasColumnName("MEETING_LINK");
 
-                    b.Property<Guid>("MentorId")
-                        .HasColumnType("RAW(16)")
+                    b.Property<int>("MentorId")
+                        .HasColumnType("NUMBER(10)")
                         .HasColumnName("MENTOR_ID");
 
                     b.Property<string>("Notes")
@@ -238,14 +246,16 @@ namespace Troca_Comigo_GS.Infrastructure.Migrations
 
                     b.HasIndex("MentorId");
 
-                    b.ToTable("TROCAS");
+                    b.ToTable("TROCAS_GS");
                 });
 
             modelBuilder.Entity("Domain.Entities.Usuario", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("RAW(16)");
+                        .HasColumnType("NUMBER(10)");
+
+                    OraclePropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("AvatarUrl")
                         .HasColumnType("VARCHAR(255)")
@@ -313,16 +323,16 @@ namespace Troca_Comigo_GS.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("USUARIOS");
+                    b.ToTable("USUARIOS_GS");
                 });
 
             modelBuilder.Entity("UsuarioUsuario", b =>
                 {
-                    b.Property<Guid>("Usuario1Id")
-                        .HasColumnType("RAW(16)");
+                    b.Property<int>("Usuario1Id")
+                        .HasColumnType("NUMBER(10)");
 
-                    b.Property<Guid>("UsuarioId")
-                        .HasColumnType("RAW(16)");
+                    b.Property<int>("UsuarioId")
+                        .HasColumnType("NUMBER(10)");
 
                     b.HasKey("Usuario1Id", "UsuarioId");
 

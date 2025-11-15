@@ -7,9 +7,50 @@ using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
+using System.Diagnostics;
 using System.Text;
 
+// ==== LOGGING & TRACING ====
+using Serilog;
+using OpenTelemetry;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
+
+// =========================
+// 🔵 SERILOG (LOGGING ESTRUTURADO)
+// =========================
+
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Debug()
+    .WriteTo.Console() // Log no console
+    .WriteTo.File("logs/api-log-.txt", rollingInterval: RollingInterval.Day) // Log diário em arquivo
+    .CreateLogger();
+
 var builder = WebApplication.CreateBuilder(args);
+
+// Integrar Serilog ao Host
+builder.Host.UseSerilog();
+
+// =========================
+// 🔵 TRACING (OpenTelemetry)
+// =========================
+
+// ActivitySource -> Necessário para rastrear operações internas
+var activitySource = new ActivitySource("TrocaComigoAPI");
+
+builder.Services.AddSingleton(activitySource);
+
+builder.Services.AddOpenTelemetry()
+    .WithTracing(t =>
+    {
+        t
+        .AddSource("TrocaComigoAPI")  
+        .SetResourceBuilder(
+            ResourceBuilder.CreateDefault().AddService("TrocaComigoAPI")
+        )
+        .AddAspNetCoreInstrumentation()
+        .AddHttpClientInstrumentation();
+    });
 
 // =========================
 // 🔵 API VERSIONING
@@ -78,10 +119,9 @@ builder.Services.AddSwaggerGen(options =>
     options.EnableAnnotations();
     options.ExampleFilters();
 
-    // 🔐 JWT - CONFIGURAÇÃO CORRETA
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
-        Description = "Insira **apenas o token JWT**. O prefixo 'Bearer' será adicionado automaticamente.",
+        Description = "Insira apenas o token JWT. O prefixo 'Bearer' será adicionado automaticamente.",
         Name = "Authorization",
         In = ParameterLocation.Header,
         Type = SecuritySchemeType.Http,
@@ -112,11 +152,17 @@ builder.Services.AddSwaggerExamplesFromAssemblyOf<Program>();
 // =========================
 var app = builder.Build();
 
+// Middleware de Logging (Serilog)
+app.UseSerilogRequestLogging();
+
+// Segurança
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 
-// Swagger
+// =========================
+// 🔵 SWAGGER
+// =========================
 app.UseSwagger();
 app.UseSwaggerUI(options =>
 {

@@ -12,6 +12,7 @@ namespace Application.Interface
         Task<IEnumerable<Troca>> ListarPorAluno(int alunoId);
 
         Task<Troca?> AtualizarStatus(int id, string status);
+        Task<Troca?> Atualizar(Troca troca);
 
         Task<bool> Deletar(int id);
     }

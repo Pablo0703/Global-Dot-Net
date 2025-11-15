@@ -1,28 +1,28 @@
-﻿namespace Presentation.DTOs;
+﻿using Presentation.Hateoas;
 
-public class TrocaDTO
+namespace Presentation.DTOs
 {
-    public int Id { get; set; }
+    public class TrocaDTO
+    {
+        public int Id { get; set; }
 
-    public required int MentorId { get; set; }
+        public int MentorId { get; set; }
+        public int AlunoId { get; set; }
+        public int HabilidadeId { get; set; }
 
-    public required int AlunoId { get; set; }
+        public string? SkillName { get; set; }
+        public DateTime ScheduledDate { get; set; }
+        public double DurationHours { get; set; }  // ALTERADO PARA DOUBLE
 
-    public required int HabilidadeId { get; set; }
+        public string Status { get; set; } = "";
+        public string? MeetingLink { get; set; }
+        public string? Notes { get; set; }
 
-    public string? SkillName { get; set; }
+        public double? CreditsValue { get; set; }  // AGORA NULLABLE COMO NA ENTITY
 
-    public required DateTime ScheduledDate { get; set; }
+        public DateTime CreatedDate { get; set; }
 
-    public required double DurationHours { get; set; }
-
-    public required string Status { get; set; }
-
-    public string? MeetingLink { get; set; }
-
-    public string? Notes { get; set; }
-
-    public double? CreditsValue { get; set; }
-
-    public DateTime CreatedDate { get; set; }
+        // 🔗 HATEOAS
+        public List<LinkDTO>? Links { get; set; }
+    }
 }

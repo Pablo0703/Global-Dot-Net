@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Domain.Entities
 {
-    [Table("AVALIACOES")]
+    [Table("AVALIACOES_GS")]
     public class Avaliacao
     {
         // 🔑 Identificação

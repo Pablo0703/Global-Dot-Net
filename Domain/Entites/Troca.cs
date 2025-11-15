@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Domain.Entities
 {
-    [Table("TROCAS")]
+    [Table("TROCAS_GS")]
     public class Troca
     {
         // 🟣 CONSTANTES (Status da troca)

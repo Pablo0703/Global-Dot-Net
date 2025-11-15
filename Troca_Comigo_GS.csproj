@@ -4,6 +4,9 @@
 		<TargetFramework>net8.0</TargetFramework>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
+
+		<!-- 🔧 Corrige erro de atributos duplicados -->
+		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -14,6 +17,12 @@
 		</PackageReference>
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="7.0.20" />
 
+		<!-- ✔ OpenTelemetry -->
+		<PackageReference Include="OpenTelemetry" Version="1.14.0" />
+		<PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.14.0" />
+		<PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.14.0" />
+		<PackageReference Include="OpenTelemetry.Instrumentation.Http" Version="1.14.0" />
+
 		<!-- ✔ Oracle EF Core -->
 		<PackageReference Include="Oracle.EntityFrameworkCore" Version="7.21.8" />
 
@@ -21,22 +30,25 @@
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="5.0.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="5.0.0" />
 
+		<!-- ✔ Logging -->
+		<PackageReference Include="Serilog.AspNetCore" Version="9.0.0" />
+		<PackageReference Include="Serilog.Sinks.Console" Version="6.1.1" />
+		<PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
+
 		<!-- ✔ Swagger -->
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
 		<PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="6.6.2" />
-
+		<PackageReference Include="Swashbuckle.AspNetCore.Filters" Version="7.0.4" />
 
 		<!-- ✔ AutoMapper -->
 		<PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
 
-		<!-- ✔ Health Check UI (opcional, apenas para resposta bonita) -->
+		<!-- ✔ Health Check UI -->
 		<PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="8.0.0" />
 
 		<!-- ✔ JWT -->
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.0" />
-		<PackageReference Include="Swashbuckle.AspNetCore.Filters" Version="7.0.4" />
 		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.0.5" />
-
 	</ItemGroup>
 
 </Project>

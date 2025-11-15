@@ -1,11 +1,12 @@
 ﻿using Application.Interface;
 using Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Swashbuckle.AspNetCore.Annotations;
 using Presentation.DTOs;
-using System.Diagnostics;
+using Presentation.Hateoas;
+using Swashbuckle.AspNetCore.Annotations;
 
-namespace Troca_Comigo_GS.Presentation.Controller
+namespace Presentation.Controllers.v1
 {
     [ApiController]
     [ApiVersion("1.0")]
@@ -13,27 +14,22 @@ namespace Troca_Comigo_GS.Presentation.Controller
     public class AvaliacaoController : ControllerBase
     {
         private readonly IAvaliacaoInterface _service;
-        private static readonly ActivitySource Activity = new("TrocaComigo.Avaliacao");
 
         public AvaliacaoController(IAvaliacaoInterface service)
         {
             _service = service;
         }
 
-        // =====================================================
-        // 🔵 1. CRIAR AVALIAÇÃO
-        // =====================================================
+        // ➕ Criar
         [HttpPost]
         [SwaggerOperation(
-            Summary = "Criar avaliação",
-            Description = "Cria uma nova avaliação entre usuários."
+            Summary = "Criar nova avaliação",
+            Description = "Cria uma nova avaliação vinculada a uma troca e aos usuários avaliador/avaliado."
         )]
         [SwaggerResponse(201, "Avaliação criada com sucesso", typeof(AvaliacaoDTO))]
-        [SwaggerResponse(400, "Dados inválidos")]
+        [SwaggerResponse(400, "Dados inválidos enviados")]
         public async Task<IActionResult> Criar([FromBody] AvaliacaoDTO dto)
         {
-            using var activity = Activity.StartActivity("Criar Avaliação");
-
             var avaliacao = new Avaliacao
             {
                 TrocaId = dto.TrocaId,
@@ -47,111 +43,128 @@ namespace Troca_Comigo_GS.Presentation.Controller
             var criado = await _service.Criar(avaliacao);
 
             return CreatedAtAction(nameof(BuscarPorId),
-                new { id = criado.Id },
-                ToDTO(criado));
+                new { id = criado.Id, version = "1" },
+                ToResource(criado));
         }
 
-        // =====================================================
-        // 🔵 2. BUSCAR POR ID
-        // =====================================================
-        [HttpGet("{id}")]
-        [SwaggerOperation(Summary = "Buscar avaliação por ID")]
-        [SwaggerResponse(200, "Avaliação localizada", typeof(AvaliacaoDTO))]
+        // 🔎 Buscar por ID
+        [HttpGet("{id:int}")]
+        [SwaggerOperation(
+            Summary = "Buscar avaliação por ID",
+            Description = "Retorna os detalhes de uma avaliação específica, incluindo links HATEOAS."
+        )]
+        [SwaggerResponse(200, "Avaliação encontrada", typeof(AvaliacaoDTO))]
         [SwaggerResponse(404, "Avaliação não encontrada")]
         public async Task<IActionResult> BuscarPorId(int id)
         {
-            using var activity = Activity.StartActivity("Buscar Avaliação Por ID");
-
             var avaliacao = await _service.BuscarPorId(id);
+            if (avaliacao == null) return NotFound();
 
-            if (avaliacao == null)
-                return NotFound(new { Mensagem = "Avaliação não encontrada" });
-
-            return Ok(ToDTO(avaliacao));
+            return Ok(ToResource(avaliacao));
         }
 
-        // =====================================================
-        // 🔵 3. LISTAR POR AVALIADO
-        // =====================================================
-        [HttpGet("avaliado/{usuarioId}")]
-        [SwaggerOperation(Summary = "Listar avaliações recebidas por um usuário")]
+        // 📄 Listar por avaliado
+        [HttpGet("avaliado/{usuarioId:int}")]
+        [SwaggerOperation(
+            Summary = "Listar avaliações recebidas por um usuário",
+            Description = "Retorna todas as avaliações onde o usuário foi avaliado."
+        )]
         [SwaggerResponse(200, "Lista retornada com sucesso", typeof(IEnumerable<AvaliacaoDTO>))]
         public async Task<IActionResult> ListarPorAvaliado(int usuarioId)
         {
-            using var activity = Activity.StartActivity("Listar Avaliações Por Avaliado");
-
             var lista = await _service.ListarPorAvaliado(usuarioId);
 
-            return Ok(lista.Select(ToDTO).ToList());
+            return Ok(
+                lista.Select(a =>
+                {
+                    var dto = ToDTO(a);
+                    dto.Links = new()
+                    {
+                        new LinkDTO(Url.Action(nameof(BuscarPorId), new { id = a.Id, version = "1" }), "self", "GET")
+                    };
+                    return dto;
+                })
+            );
         }
 
-        // =====================================================
-        // 🔵 4. LISTAR POR TROCA
-        // =====================================================
-        [HttpGet("troca/{trocaId}")]
-        [SwaggerOperation(Summary = "Listar avaliações vinculadas a uma troca")]
+        // 📄 Listar por troca
+        [HttpGet("troca/{trocaId:int}")]
+        [SwaggerOperation(
+            Summary = "Listar avaliações de uma troca",
+            Description = "Retorna todas as avaliações vinculadas a uma troca específica."
+        )]
         [SwaggerResponse(200, "Lista retornada com sucesso", typeof(IEnumerable<AvaliacaoDTO>))]
         public async Task<IActionResult> ListarPorTroca(int trocaId)
         {
-            using var activity = Activity.StartActivity("Listar Avaliações Por Troca");
-
             var lista = await _service.ListarPorTroca(trocaId);
 
-            return Ok(lista.Select(ToDTO).ToList());
+            return Ok(
+                lista.Select(a =>
+                {
+                    var dto = ToDTO(a);
+                    dto.Links = new()
+                    {
+                        new LinkDTO(Url.Action(nameof(BuscarPorId), new { id = a.Id, version = "1" }), "self", "GET")
+                    };
+                    return dto;
+                })
+            );
         }
 
-        // =====================================================
-        // 🔵 5. ATUALIZAR
-        // =====================================================
-        [HttpPut("{id}")]
-        [SwaggerOperation(Summary = "Atualizar avaliação")]
-        [SwaggerResponse(200, "Avaliação atualizada", typeof(AvaliacaoDTO))]
+        // ✏️ Atualizar
+        [HttpPut("{id:int}")]
+        [SwaggerOperation(
+            Summary = "Atualizar avaliação",
+            Description = "Atualiza os campos de nota e comentário de uma avaliação existente."
+        )]
+        [SwaggerResponse(200, "Avaliação atualizada com sucesso", typeof(AvaliacaoDTO))]
         [SwaggerResponse(404, "Avaliação não encontrada")]
         public async Task<IActionResult> Atualizar(int id, [FromBody] AvaliacaoDTO dto)
         {
-            using var activity = Activity.StartActivity("Atualizar Avaliação");
-
             var avaliacao = await _service.BuscarPorId(id);
-
-            if (avaliacao == null)
-                return NotFound(new { Mensagem = "Avaliação não encontrada" });
+            if (avaliacao == null) return NotFound();
 
             avaliacao.Nota = dto.Nota;
             avaliacao.Comentario = dto.Comentario;
 
-            // ❗ NÃO RECRIA DATA DE CRIAÇÃO
-            // avaliacao.DataCriacao permanece a mesma
-
             await _service.Atualizar(avaliacao);
 
-            return Ok(ToDTO(avaliacao));
+            return Ok(ToResource(avaliacao));
         }
 
-        // =====================================================
-        // 🔵 6. DELETE
-        // =====================================================
-        [HttpDelete("{id}")]
-        [SwaggerOperation(Summary = "Excluir avaliação")]
-        [SwaggerResponse(204, "Avaliação removida")]
+        // ❌ Deletar
+        [HttpDelete("{id:int}")]
+        [Authorize(Roles = "ADMIN")]
+        [SwaggerOperation(
+            Summary = "Excluir avaliação",
+            Description = "Remove uma avaliação do sistema. Apenas administradores podem realizar essa ação."
+        )]
+        [SwaggerResponse(204, "Avaliação removida com sucesso")]
         [SwaggerResponse(404, "Avaliação não encontrada")]
         public async Task<IActionResult> Deletar(int id)
         {
-            using var activity = Activity.StartActivity("Deletar Avaliação");
-
             var avaliacao = await _service.BuscarPorId(id);
-
-            if (avaliacao == null)
-                return NotFound(new { Mensagem = "Avaliação não encontrada" });
+            if (avaliacao == null) return NotFound();
 
             await _service.Remover(id);
 
             return NoContent();
         }
 
-        // =====================================================
-        // 🔵 MAPEAMENTO DTO
-        // =====================================================
-        private static AvaliacaoDTO ToDTO(Avaliacao a)
+        // 🔄 HATEOAS
+        private ResourceDTO<AvaliacaoDTO> ToResource(Avaliacao a)
+        {
+            var dto = ToDTO(a);
+            var res = new ResourceDTO<AvaliacaoDTO>(dto);
+
+            res.AddLink(Url.Action(nameof(BuscarPorId), new { id = a.Id, version = "1" }), "self", "GET");
+            res.AddLink(Url.Action(nameof(Atualizar), new { id = a.Id, version = "1" }), "update", "PUT");
+            res.AddLink(Url.Action(nameof(Deletar), new { id = a.Id, version = "1" }), "delete", "DELETE");
+
+            return res;
+        }
+
+        private AvaliacaoDTO ToDTO(Avaliacao a)
         {
             return new AvaliacaoDTO
             {

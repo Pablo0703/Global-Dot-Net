@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Domain.Entities
 {
-    [Table("USUARIOS")]
+    [Table("USUARIOS_GS")]
     public class Usuario
     {
         // 🟣 CONSTANTES — Tipos de usuário

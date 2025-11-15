@@ -61,6 +61,14 @@ namespace Application.Service
             return troca;
         }
 
+        // ⭐ MÉTODO QUE ESTAVA FALTANDO
+        public async Task<Troca?> Atualizar(Troca troca)
+        {
+            _context.Trocas.Update(troca);
+            await _context.SaveChangesAsync();
+            return troca;
+        }
+
         public async Task<bool> Deletar(int id)
         {
             var troca = await _context.Trocas.FindAsync(id);

@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Domain.Entities
 {
-    [Table("TRANSACOES")]
+    [Table("TRANSACOES_GS")]
     public class Transacao
     {
         // 🟣 CONSTANTES — Tipo de transação

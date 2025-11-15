@@ -58,8 +58,8 @@
         "tags": [
           "Avaliacao"
         ],
-        "summary": "Criar avaliação",
-        "description": "Cria uma nova avaliação entre usuários.",
+        "summary": "Criar nova avaliação",
+        "description": "Cria uma nova avaliação vinculada a uma troca e aos usuários avaliador/avaliado.",
         "requestBody": {
           "content": {
             "application/json": {
@@ -101,7 +101,7 @@
             }
           },
           "400": {
-            "description": "Dados inválidos"
+            "description": "Dados inválidos enviados"
           }
         }
       }
@@ -112,6 +112,7 @@
           "Avaliacao"
         ],
         "summary": "Buscar avaliação por ID",
+        "description": "Retorna os detalhes de uma avaliação específica, incluindo links HATEOAS.",
         "parameters": [
           {
             "name": "id",
@@ -125,7 +126,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Avaliação localizada",
+            "description": "Avaliação encontrada",
             "content": {
               "text/plain": {
                 "schema": {
@@ -154,6 +155,7 @@
           "Avaliacao"
         ],
         "summary": "Atualizar avaliação",
+        "description": "Atualiza os campos de nota e comentário de uma avaliação existente.",
         "parameters": [
           {
             "name": "id",
@@ -186,7 +188,7 @@
         },
         "responses": {
           "200": {
-            "description": "Avaliação atualizada",
+            "description": "Avaliação atualizada com sucesso",
             "content": {
               "text/plain": {
                 "schema": {
@@ -215,6 +217,7 @@
           "Avaliacao"
         ],
         "summary": "Excluir avaliação",
+        "description": "Remove uma avaliação do sistema. Apenas administradores podem realizar essa ação.",
         "parameters": [
           {
             "name": "id",
@@ -228,7 +231,7 @@
         ],
         "responses": {
           "204": {
-            "description": "Avaliação removida"
+            "description": "Avaliação removida com sucesso"
           },
           "404": {
             "description": "Avaliação não encontrada"
@@ -242,6 +245,7 @@
           "Avaliacao"
         ],
         "summary": "Listar avaliações recebidas por um usuário",
+        "description": "Retorna todas as avaliações onde o usuário foi avaliado.",
         "parameters": [
           {
             "name": "usuarioId",
@@ -291,7 +295,8 @@
         "tags": [
           "Avaliacao"
         ],
-        "summary": "Listar avaliações vinculadas a uma troca",
+        "summary": "Listar avaliações de uma troca",
+        "description": "Retorna todas as avaliações vinculadas a uma troca específica.",
         "parameters": [
           {
             "name": "trocaId",
@@ -341,8 +346,8 @@
         "tags": [
           "Habilidade"
         ],
-        "summary": "Criar habilidade",
-        "description": "Cria uma nova habilidade para um usuário.",
+        "summary": "Criar nova habilidade",
+        "description": "Cria uma nova habilidade vinculada a um usuário, incluindo descrição, nível e categoria.",
         "requestBody": {
           "content": {
             "application/json": {
@@ -382,6 +387,9 @@
                 }
               }
             }
+          },
+          "400": {
+            "description": "Dados inválidos enviados"
           }
         }
       },
@@ -389,10 +397,11 @@
         "tags": [
           "Habilidade"
         ],
-        "summary": "Listar todas as habilidades",
+        "summary": "Listar habilidades",
+        "description": "Retorna todas as habilidades cadastradas no sistema com links HATEOAS.",
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Lista retornada com sucesso"
           }
         }
       }
@@ -403,6 +412,7 @@
           "Habilidade"
         ],
         "summary": "Buscar habilidade por ID",
+        "description": "Retorna os detalhes de uma habilidade específica cadastrada no sistema.",
         "parameters": [
           {
             "name": "id",
@@ -445,6 +455,7 @@
           "Habilidade"
         ],
         "summary": "Atualizar habilidade",
+        "description": "Atualiza os dados de uma habilidade existente no sistema.",
         "parameters": [
           {
             "name": "id",
@@ -477,7 +488,7 @@
         },
         "responses": {
           "200": {
-            "description": "Habilidade atualizada",
+            "description": "Habilidade atualizada com sucesso",
             "content": {
               "text/plain": {
                 "schema": {
@@ -506,6 +517,7 @@
           "Habilidade"
         ],
         "summary": "Excluir habilidade",
+        "description": "Remove uma habilidade do sistema. Apenas administradores podem realizar essa operação.",
         "parameters": [
           {
             "name": "id",
@@ -519,7 +531,7 @@
         ],
         "responses": {
           "204": {
-            "description": "Habilidade removida"
+            "description": "Habilidade removida com sucesso"
           },
           "404": {
             "description": "Habilidade não encontrada"
@@ -532,7 +544,8 @@
         "tags": [
           "Habilidade"
         ],
-        "summary": "Listar habilidades de um usuário específico",
+        "summary": "Listar habilidades por usuário",
+        "description": "Retorna todas as habilidades cadastradas para um usuário específico.",
         "parameters": [
           {
             "name": "usuarioId",
@@ -546,7 +559,7 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Lista retornada com sucesso"
           }
         }
       }
@@ -556,8 +569,8 @@
         "tags": [
           "Transacao"
         ],
-        "summary": "Criar transação",
-        "description": "Cria uma transação de créditos entre dois usuários, podendo ser pagamento, bônus ou ajuste.",
+        "summary": "Criar nova transação",
+        "description": "Cria uma nova transação de créditos entre usuários dentro de uma troca.",
         "requestBody": {
           "content": {
             "application/json": {
@@ -599,7 +612,7 @@
             }
           },
           "400": {
-            "description": "Dados inválidos"
+            "description": "Dados inválidos enviados"
           }
         }
       },
@@ -607,8 +620,8 @@
         "tags": [
           "Transacao"
         ],
-        "summary": "Listar transações",
-        "description": "Retorna todas as transações registradas no sistema.",
+        "summary": "Listar todas as transações",
+        "description": "Retorna toda a movimentação de créditos registrada no sistema.",
         "responses": {
           "200": {
             "description": "Lista retornada com sucesso"
@@ -622,7 +635,7 @@
           "Transacao"
         ],
         "summary": "Buscar transação por ID",
-        "description": "Obtém os detalhes completos de uma transação específica.",
+        "description": "Retorna detalhes de uma transação específica, incluindo informações do remetente, destinatário e créditos.",
         "parameters": [
           {
             "name": "id",
@@ -665,7 +678,7 @@
           "Transacao"
         ],
         "summary": "Atualizar transação",
-        "description": "Atualiza completamente os dados de uma transação existente.",
+        "description": "Atualiza os dados de uma transação existente, como descrição, créditos e status.",
         "parameters": [
           {
             "name": "id",
@@ -727,7 +740,7 @@
           "Transacao"
         ],
         "summary": "Excluir transação",
-        "description": "Remove permanentemente uma transação do sistema.",
+        "description": "Remove uma transação do sistema. Operação restrita a administradores.",
         "parameters": [
           {
             "name": "id",
@@ -755,7 +768,7 @@
           "Transacao"
         ],
         "summary": "Listar transações de um usuário",
-        "description": "Retorna todas as transações em que o usuário aparece como remetente ou destinatário.",
+        "description": "Retorna todas as transações onde o usuário participou, seja como remetente ou destinatário.",
         "parameters": [
           {
             "name": "id",
@@ -780,7 +793,7 @@
           "Transacao"
         ],
         "summary": "Concluir transação",
-        "description": "Marca a transação como CONCLUÍDA.",
+        "description": "Marca a transação como concluída, finalizando o fluxo de troca de créditos.",
         "parameters": [
           {
             "name": "id",
@@ -825,7 +838,7 @@
           "Transacao"
         ],
         "summary": "Estornar transação",
-        "description": "Altera o status da transação para ESTORNADA.",
+        "description": "Reverte o crédito transferido, voltando o valor ao remetente.",
         "parameters": [
           {
             "name": "id",
@@ -869,8 +882,8 @@
         "tags": [
           "Troca"
         ],
-        "summary": "Criar troca",
-        "description": "Cria uma nova troca entre mentor e aluno, vinculada a uma habilidade.",
+        "summary": "Criar nova troca",
+        "description": "Cria uma nova troca entre mentor e aluno, incluindo habilidade, horário e créditos negociados.",
         "requestBody": {
           "content": {
             "application/json": {
@@ -912,7 +925,7 @@
             }
           },
           "400": {
-            "description": "Dados inválidos"
+            "description": "Dados inválidos enviados"
           }
         }
       },
@@ -920,8 +933,8 @@
         "tags": [
           "Troca"
         ],
-        "summary": "Listar trocas",
-        "description": "Lista todas as trocas cadastradas no sistema.",
+        "summary": "Listar todas as trocas",
+        "description": "Retorna todas as trocas registradas no sistema com links HATEOAS.",
         "responses": {
           "200": {
             "description": "Lista retornada com sucesso"
@@ -935,7 +948,7 @@
           "Troca"
         ],
         "summary": "Buscar troca por ID",
-        "description": "Retorna os detalhes de uma troca específica.",
+        "description": "Retorna os detalhes completos de uma troca específica, incluindo links HATEOAS.",
         "parameters": [
           {
             "name": "id",
@@ -978,7 +991,7 @@
           "Troca"
         ],
         "summary": "Atualizar troca",
-        "description": "Atualiza os dados de uma troca (exceto status).",
+        "description": "Atualiza completamente os dados de uma troca existente.",
         "parameters": [
           {
             "name": "id",
@@ -1040,7 +1053,7 @@
           "Troca"
         ],
         "summary": "Excluir troca",
-        "description": "Remove permanentemente uma troca do sistema.",
+        "description": "Remove uma troca do sistema. Somente administradores podem executar essa ação.",
         "parameters": [
           {
             "name": "id",
@@ -1068,7 +1081,7 @@
           "Troca"
         ],
         "summary": "Listar trocas por mentor",
-        "description": "Retorna todas as trocas em que o usuário atua como mentor.",
+        "description": "Retorna todas as trocas onde o usuário atua como mentor.",
         "parameters": [
           {
             "name": "mentorId",
@@ -1093,7 +1106,7 @@
           "Troca"
         ],
         "summary": "Listar trocas por aluno",
-        "description": "Retorna todas as trocas em que o usuário atua como aluno.",
+        "description": "Retorna todas as trocas onde o usuário atua como aluno.",
         "parameters": [
           {
             "name": "alunoId",
@@ -1118,7 +1131,7 @@
           "Troca"
         ],
         "summary": "Atualizar status da troca",
-        "description": "Atualiza apenas o status da troca (AGENDADA, CONFIRMADA, CONCLUIDA...).",
+        "description": "Altera apenas o status da troca (Ex: Pendente → Confirmada → Finalizada).",
         "parameters": [
           {
             "name": "id",
@@ -1182,7 +1195,7 @@
           "Usuario"
         ],
         "summary": "Criar novo usuário",
-        "description": "Endpoint responsável pela criação de um novo usuário.",
+        "description": "Cria um novo usuário com nome, e-mail, senha, cargo, bio, avatar, localização e créditos iniciais.",
         "requestBody": {
           "content": {
             "application/json": {
@@ -1224,7 +1237,7 @@
             }
           },
           "400": {
-            "description": "Dados inválidos"
+            "description": "Dados inválidos enviados"
           }
         }
       },
@@ -1232,8 +1245,8 @@
         "tags": [
           "Usuario"
         ],
-        "summary": "Listar usuários",
-        "description": "Retorna usuários com suporte a paginação.",
+        "summary": "Listar usuários com paginação",
+        "description": "Retorna uma lista paginada de usuários, incluindo links HATEOAS e metadados da paginação.",
         "parameters": [
           {
             "name": "page",
@@ -1256,33 +1269,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Lista retornada",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/UsuarioDTO"
-                  }
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/UsuarioDTO"
-                  }
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/UsuarioDTO"
-                  }
-                }
-              }
-            }
+            "description": "Lista retornada com sucesso"
           }
         }
       }
@@ -1293,7 +1280,7 @@
           "Usuario"
         ],
         "summary": "Buscar usuário por ID",
-        "description": "Retorna os dados de um usuário específico.",
+        "description": "Retorna os detalhes completos de um usuário específico, incluindo links HATEOAS.",
         "parameters": [
           {
             "name": "id",
@@ -1336,7 +1323,7 @@
           "Usuario"
         ],
         "summary": "Atualizar usuário",
-        "description": "Atualiza os dados de um usuário existente.",
+        "description": "Atualiza os dados cadastrais de um usuário existente.",
         "parameters": [
           {
             "name": "id",
@@ -1369,7 +1356,7 @@
         },
         "responses": {
           "200": {
-            "description": "Usuário atualizado",
+            "description": "Usuário atualizado com sucesso",
             "content": {
               "text/plain": {
                 "schema": {
@@ -1398,7 +1385,7 @@
           "Usuario"
         ],
         "summary": "Excluir usuário",
-        "description": "Remove um usuário da plataforma.",
+        "description": "Remove um usuário do sistema. Apenas administradores têm permissão para executar esta ação.",
         "parameters": [
           {
             "name": "id",
@@ -1413,34 +1400,6 @@
         "responses": {
           "204": {
             "description": "Usuário removido com sucesso"
-          },
-          "404": {
-            "description": "Usuário não encontrado"
-          }
-        }
-      }
-    },
-    "/api/v1/usuarios/{id}/habilidades": {
-      "get": {
-        "tags": [
-          "Usuario"
-        ],
-        "summary": "Listar habilidades de um usuário",
-        "description": "Retorna todas as habilidades vinculadas ao usuário.",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Habilidades encontradas"
           },
           "404": {
             "description": "Usuário não encontrado"
@@ -1487,19 +1446,18 @@
           "dataCriacao": {
             "type": "string",
             "format": "date-time"
+          },
+          "links": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LinkDTO"
+            },
+            "nullable": true
           }
         },
         "additionalProperties": false
       },
       "HabilidadeDTO": {
-        "required": [
-          "categoria",
-          "isOffering",
-          "isSeeking",
-          "nivel",
-          "nome",
-          "usuarioId"
-        ],
         "type": "object",
         "properties": {
           "id": {
@@ -1540,6 +1498,31 @@
           "dataCriacao": {
             "type": "string",
             "format": "date-time"
+          },
+          "links": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LinkDTO"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "LinkDTO": {
+        "type": "object",
+        "properties": {
+          "href": {
+            "type": "string",
+            "nullable": true
+          },
+          "rel": {
+            "type": "string",
+            "nullable": true
+          },
+          "method": {
+            "type": "string",
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -1585,13 +1568,6 @@
         "additionalProperties": false
       },
       "TransacaoDTO": {
-        "required": [
-          "creditos",
-          "destinatarioId",
-          "remetenteId",
-          "status",
-          "tipo"
-        ],
         "type": "object",
         "properties": {
           "id": {
@@ -1630,19 +1606,18 @@
           "dataCriacao": {
             "type": "string",
             "format": "date-time"
+          },
+          "links": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LinkDTO"
+            },
+            "nullable": true
           }
         },
         "additionalProperties": false
       },
       "TrocaDTO": {
-        "required": [
-          "alunoId",
-          "durationHours",
-          "habilidadeId",
-          "mentorId",
-          "scheduledDate",
-          "status"
-        ],
         "type": "object",
         "properties": {
           "id": {
@@ -1693,6 +1668,13 @@
           "createdDate": {
             "type": "string",
             "format": "date-time"
+          },
+          "links": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LinkDTO"
+            },
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -1759,6 +1741,13 @@
           "createdDate": {
             "type": "string",
             "format": "date-time"
+          },
+          "links": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LinkDTO"
+            },
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -1767,7 +1756,7 @@
     "securitySchemes": {
       "Bearer": {
         "type": "http",
-        "description": "Insira **apenas o token JWT**. O prefixo 'Bearer' será adicionado automaticamente.",
+        "description": "Insira apenas o token JWT. O prefixo 'Bearer' será adicionado automaticamente.",
         "scheme": "Bearer",
         "bearerFormat": "JWT"
       }
