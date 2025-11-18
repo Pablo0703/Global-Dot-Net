@@ -1,0 +1,6 @@
+@Troca_Comigo_GS_HostAddress = http://localhost:5269
+
+GET {{Troca_Comigo_GS_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
