@@ -8,6 +8,8 @@
 		<!-- 🔧 Corrige erro de atributos duplicados -->
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 		<PreserveCompilationContext>true</PreserveCompilationContext>
+		<UserSecretsId>b0e8a475-33b6-4651-9c79-decc9c880dd9</UserSecretsId>
+		<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -17,6 +19,7 @@
 			<PrivateAssets>all</PrivateAssets>
 		</PackageReference>
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="7.0.20" />
+		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.22.1" />
 
 		<!-- ✔ OpenTelemetry -->
 		<PackageReference Include="OpenTelemetry" Version="1.14.0" />
