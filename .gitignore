@@ -16,3 +16,7 @@ appsettings.Development.json
 # Others
 *.cache
 *.tmp
+
+logs/
+*.log
+*.txt
