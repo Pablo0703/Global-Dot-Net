@@ -27,7 +27,7 @@ namespace Tests.App.Services
         {
             var usuario = new Usuario
             {
-                FullName = "Pablo Lopes",
+                NomeCompleto = "Pablo Lopes",
                 Email = "pablo@test.com",
                 Password = "123456",
                 Role = "USER",
@@ -42,7 +42,7 @@ namespace Tests.App.Services
 
             criado.Should().NotBeNull();
             criado.Id.Should().BeGreaterThan(0);
-            criado.FullName.Should().Be("Pablo Lopes");
+            criado.NomeCompleto.Should().Be("Pablo Lopes");
             criado.Email.Should().Be("pablo@test.com");
         }
 
@@ -51,7 +51,7 @@ namespace Tests.App.Services
         {
             var user = new Usuario
             {
-                FullName = "Teste",
+                NomeCompleto = "Teste",
                 Email = "teste@teste.com",
                 Password = "123",
                 Role = "USER"
@@ -78,7 +78,7 @@ namespace Tests.App.Services
         {
             _context.Usuarios.Add(new Usuario
             {
-                FullName = "User 1",
+                NomeCompleto = "User 1",
                 Email = "u1@test.com",
                 Password = "123"
             });
@@ -96,7 +96,7 @@ namespace Tests.App.Services
         {
             var user = new Usuario
             {
-                FullName = "Antigo Nome",
+                NomeCompleto = "Antigo Nome",
                 Email = "old@test.com",
                 Password = "123"
             };
@@ -106,7 +106,7 @@ namespace Tests.App.Services
 
             var atualizacao = new Usuario
             {
-                FullName = "Nome Novo",
+                NomeCompleto = "Nome Novo",
                 Bio = "Nova Bio",
                 Location = "RJ",
                 Timezone = "America/Rio"
@@ -115,7 +115,7 @@ namespace Tests.App.Services
             var atualizado = await _service.Atualizar(user.Id, atualizacao);
 
             atualizado.Should().NotBeNull();
-            atualizado!.FullName.Should().Be("Nome Novo");
+            atualizado!.NomeCompleto.Should().Be("Nome Novo");
             atualizado.Bio.Should().Be("Nova Bio");
             atualizado.Location.Should().Be("RJ");
         }
@@ -125,7 +125,7 @@ namespace Tests.App.Services
         {
             var user = new Usuario
             {
-                FullName = "Para Deletar",
+                NomeCompleto = "Para Deletar",
                 Email = "delete@test.com",
                 Password = "123"
             };

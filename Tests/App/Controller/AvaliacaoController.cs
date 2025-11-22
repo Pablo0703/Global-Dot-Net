@@ -24,13 +24,13 @@ namespace Tests.App.Controllers
 
             var url = new Mock<IUrlHelper>();
             url.Setup(u => u.Action(It.IsAny<UrlActionContext>()))
-               .Returns("http://localhost/api/v1/avaliacoes/1");
+               .Returns("http://localhost/api/v1/avaliacao/1");
 
             _controller.Url = url.Object;
         }
 
         // ============================================================
-        // GET /avaliacoes/{id}
+        // GET /avaliacao/{id}
         // ============================================================
         [Fact(DisplayName = "GET por ID deve retornar avaliação existente")]
         public async Task BuscarPorId_DeveRetornarAvaliacao()
@@ -59,7 +59,7 @@ namespace Tests.App.Controllers
         }
 
         // ============================================================
-        // GET /avaliacoes/troca/{trocaId}
+        // GET /avaliacao/troca/{trocaId}
         // ============================================================
         [Fact(DisplayName = "GET por troca deve retornar lista de avaliações")]
         public async Task ListarPorTroca_DeveRetornarLista()
@@ -76,14 +76,16 @@ namespace Tests.App.Controllers
             var result = await _controller.ListarPorTroca(trocaId);
 
             var ok = Assert.IsType<OkObjectResult>(result);
-            var dtos = ok.Value as IEnumerable<AvaliacaoDTO>;
+            var response = ok.Value!;
+            var itemsProp = response.GetType().GetProperty("items");
+            var dtos = itemsProp?.GetValue(response) as IEnumerable<AvaliacaoDTO>;
 
             Assert.NotNull(dtos);
             Assert.True(dtos.Any());
         }
 
         // ============================================================
-        // POST /avaliacoes
+        // POST /avaliacao
         // ============================================================
         [Fact(DisplayName = "POST deve retornar Created")]
         public async Task Criar_DeveRetornarCreated()
@@ -118,7 +120,7 @@ namespace Tests.App.Controllers
         }
 
         // ============================================================
-        // PUT /avaliacoes/{id}
+        // PUT /avaliacao/{id}
         // ============================================================
         [Fact(DisplayName = "PUT deve retornar Ok ao atualizar")]
         public async Task Atualizar_DeveRetornarOk()
@@ -149,7 +151,7 @@ namespace Tests.App.Controllers
         }
 
         // ============================================================
-        // DELETE /avaliacoes/{id}
+        // DELETE /avaliacao/{id}
         // ============================================================
         [Fact(DisplayName = "DELETE deve retornar NoContent")]
         public async Task Delete_DeveRetornarNoContent()

@@ -64,20 +64,24 @@ namespace Tests.App.Controllers
         public async Task Listar_DeveRetornarLista()
         {
             var lista = new List<Transacao>
-            {
-                new Transacao { Id = 1, Creditos = 10 }
-            };
+    {
+        new Transacao { Id = 1, Creditos = 10 }
+    };
 
             _serviceMock.Setup(s => s.Listar()).ReturnsAsync(lista);
 
             var result = await _controller.Listar();
 
             var ok = Assert.IsType<OkObjectResult>(result);
-            var dtos = ok.Value as IEnumerable<TransacaoDTO>;
+            var response = ok.Value!;
+
+            var itemsProp = response.GetType().GetProperty("items");
+            var dtos = itemsProp?.GetValue(response) as IEnumerable<TransacaoDTO>;
 
             Assert.NotNull(dtos);
             Assert.True(dtos.Any());
         }
+
 
         // ============================================================
         // GET /transacoes/usuario/{id}
@@ -85,21 +89,27 @@ namespace Tests.App.Controllers
         [Fact(DisplayName = "GET por usuário deve retornar lista de transações")]
         public async Task ListarPorUsuario_DeveRetornarLista()
         {
+            var usuarioId = 1;
+
             var lista = new List<Transacao>
-            {
-                new Transacao { Id = 1, RemetenteId = 99 }
-            };
+    {
+        new Transacao { Id = 1, DestinatarioId = usuarioId, Creditos = 20 }
+    };
 
-            _serviceMock.Setup(s => s.ListarPorUsuario(99)).ReturnsAsync(lista);
+            _serviceMock.Setup(s => s.ListarPorUsuario(usuarioId)).ReturnsAsync(lista);
 
-            var result = await _controller.ListarPorUsuario(99);
+            var result = await _controller.ListarPorUsuario(usuarioId);
 
             var ok = Assert.IsType<OkObjectResult>(result);
-            var dtos = ok.Value as IEnumerable<TransacaoDTO>;
+            var response = ok.Value!;
+
+            var itemsProp = response.GetType().GetProperty("items");
+            var dtos = itemsProp?.GetValue(response) as IEnumerable<TransacaoDTO>;
 
             Assert.NotNull(dtos);
             Assert.True(dtos.Any());
         }
+
 
         // ============================================================
         // POST /transacoes

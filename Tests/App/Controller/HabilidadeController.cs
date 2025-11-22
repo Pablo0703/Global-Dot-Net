@@ -36,24 +36,24 @@ namespace Tests.App.Controllers
         public async Task Listar_DeveRetornarLista()
         {
             var lista = new List<Habilidade>
-            {
-                new Habilidade
-                {
-                    Id = 1,
-                    Nome = "Programação"
-                }
-            };
+    {
+        new Habilidade { Id = 1, Nome = "C# Básico" }
+    };
 
             _serviceMock.Setup(s => s.Listar()).ReturnsAsync(lista);
 
             var result = await _controller.Listar();
 
             var ok = Assert.IsType<OkObjectResult>(result);
-            var dtos = ok.Value as IEnumerable<HabilidadeDTO>;
+            var response = ok.Value!;
+
+            var itemsProp = response.GetType().GetProperty("items");
+            var dtos = itemsProp?.GetValue(response) as IEnumerable<HabilidadeDTO>;
 
             Assert.NotNull(dtos);
             Assert.True(dtos.Any());
         }
+
 
         // ====================================================
         // GET /habilidades/{id}

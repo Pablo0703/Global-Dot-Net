@@ -63,20 +63,24 @@ namespace Tests.App.Controllers
         public async Task Listar_DeveRetornarLista()
         {
             var lista = new List<Troca>
-            {
-                new Troca { Id = 1, MentorId = 10, AlunoId = 20 }
-            };
+    {
+        new Troca { Id = 1, MentorId = 10, AlunoId = 20 }
+    };
 
             _serviceMock.Setup(s => s.Listar()).ReturnsAsync(lista);
 
             var result = await _controller.Listar();
 
             var ok = Assert.IsType<OkObjectResult>(result);
-            var dtos = ok.Value as IEnumerable<TrocaDTO>;
+            var response = ok.Value!;
+
+            var itemsProp = response.GetType().GetProperty("items");
+            var dtos = itemsProp?.GetValue(response) as IEnumerable<TrocaDTO>;
 
             Assert.NotNull(dtos);
             Assert.True(dtos.Any());
         }
+
 
         // ============================================================
         // POST /trocas

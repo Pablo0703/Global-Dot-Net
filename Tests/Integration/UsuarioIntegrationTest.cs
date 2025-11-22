@@ -24,7 +24,7 @@ namespace Tests.Integration
             context.Usuarios.Add(new Usuario
             {
                 Id = 1,
-                FullName = "Pablo Teste",
+                NomeCompleto = "Pablo Teste",
                 Email = "teste@teste.com",
                 Password = "123",
                 Role = "USER",
@@ -46,7 +46,7 @@ namespace Tests.Integration
         {
             var dto = new UsuarioDTO
             {
-                FullName = "Novo Usuario",
+                NomeCompleto = "Novo Usuario",
                 Email = "novo@email.com",
                 Password = "123456",
                 Role = "USER",

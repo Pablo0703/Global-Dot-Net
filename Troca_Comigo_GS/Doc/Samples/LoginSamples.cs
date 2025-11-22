@@ -12,7 +12,7 @@ namespace Presentation.Doc.Samples
                 UserId = 1,
                 FullName = "João da Silva",
                 Email = "joao.silva@example.com",
-                Role = "USER"
+                Role = "ADMIN"
             };
         }
     }

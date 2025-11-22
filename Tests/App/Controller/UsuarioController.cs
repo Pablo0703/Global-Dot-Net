@@ -40,7 +40,7 @@ namespace Tests.App.Controllers
             var entity = new Usuario
             {
                 Id = 1,
-                FullName = "João Silva",
+                NomeCompleto = "João Silva",
                 Email = "joao@email.com"
             };
 
@@ -54,7 +54,7 @@ namespace Tests.App.Controllers
             var dataValue = dataProp?.GetValue(response) as UsuarioDTO;
 
             Assert.NotNull(dataValue);
-            Assert.Equal("João Silva", dataValue.FullName);
+            Assert.Equal("João Silva", dataValue.NomeCompleto);
         }
 
         // =============================
@@ -65,7 +65,7 @@ namespace Tests.App.Controllers
         {
             var lista = new List<Usuario>
             {
-                new Usuario { Id = 1, FullName = "Teste", Email = "t@t.com" }
+                new Usuario { Id = 1, NomeCompleto = "Teste", Email = "t@t.com" }
             };
 
             _serviceMock.Setup(s => s.Listar()).ReturnsAsync(lista);
@@ -90,7 +90,7 @@ namespace Tests.App.Controllers
             var entity = new Usuario
             {
                 Id = 1,
-                FullName = "Novo User",
+                NomeCompleto = "Novo User",
                 Email = "novo@teste.com"
             };
 
@@ -99,7 +99,7 @@ namespace Tests.App.Controllers
 
             var dto = new UsuarioDTO
             {
-                FullName = "Novo User",
+                NomeCompleto = "Novo User",
                 Email = "novo@teste.com",
                 Password = "123456",
                 Role = "USER"
@@ -113,7 +113,7 @@ namespace Tests.App.Controllers
             var dataValue = dataProp?.GetValue(response) as UsuarioDTO;
 
             Assert.NotNull(dataValue);
-            Assert.Equal("Novo User", dataValue.FullName);
+            Assert.Equal("Novo User", dataValue.NomeCompleto);
         }
 
         // =============================
@@ -122,13 +122,13 @@ namespace Tests.App.Controllers
         [Fact(DisplayName = "PUT deve retornar Ok quando atualizar usuário")]
         public async Task Atualizar_DeveRetornarOk()
         {
-            var entity = new Usuario { Id = 1, FullName = "Antigo" };
+            var entity = new Usuario { Id = 1, NomeCompleto = "Antigo" };
 
             _serviceMock.Setup(s => s.BuscarPorId(1)).ReturnsAsync(entity);
             _serviceMock.Setup(s => s.Atualizar(1, It.IsAny<Usuario>()))
                         .ReturnsAsync(entity);
 
-            var dto = new UsuarioDTO { FullName = "Atualizado" };
+            var dto = new UsuarioDTO { NomeCompleto = "Atualizado" };
 
             var result = await _controller.Atualizar(1, dto);
             var ok = Assert.IsType<OkObjectResult>(result);
